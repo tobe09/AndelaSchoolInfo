@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <script src="View/Scripts/jquery.min.js"></script>
+    <title>Node Json Test</title>
+</head>
+<body>
+    <br />
+    <select id="select1">
+        <option value="Value1">Text1</option> 
+        <option value="Value2">Text2</option> 
+    </select>
+    <br />
+    <span id="spanMsg"></span>
+    <br /><br />
+    <span>Enter Dummy Data: </span>
+    <input id="txtDummy" type="text" value=""/><br />
+    <br />
+    <input id="btnSubmit" type="submit" value="Submit" />
+    <br />
+    <br />
+    <div id="divResult" class="invisible">
+        Today's Date: <span id="date"></span><br />
+        Id: <span id="id"></span>
+        <br />
+        SurName: <span id="sName"></span>
+        <br />
+        Other Name(s): <span id="oName"></span>
+        <br />
+        Age: <span id="age"></span>
+        <br />
+        Faculty: <span id="fac"></span>
+        <br />
+        Department: <span id="dept"></span>
+        <br />
+        Level: <span id="level"></span>
+        <br />
+        Matric No: <span id="matNo"></span>
+        <br />
+        <br />
+        Dummy Data: <span id="dData"></span>
+    </div>
+
+    <script>
+        $(function () {
+            debugger
+
+
+            var a = 1;
+
+
+            var aab = $('#select1').val();
+
+
+            var aaa = $('#select1').text();
+
+            $("#btnSubmit").on("click", function (e) {
+                e.preventDefault();
+                $('#spanMsg').text("Loading data from json");
+                $.ajax({
+                    type: "GET",
+                    url: "Students/3",
+                    success: function (result) {
+                        console.log(result);
+                        if (typeof (result.Error) == "undefined") {
+                            $('#divResult').css('visibility', 'visible');
+                            $('#date').text(new Date().getFullYear() + "/" + (new Date().getMonth() + 1) + "/" + new Date().getDate());
+                            $('#id').html(result.Id);
+                            $('#sName').text(result.LastName);
+                            $('#oName').html(result.FirstName + "&nbsp;" + result.MiddleName);
+                            $('#age').text(result.Age);
+                            $('#fac').text(result.Faculty);
+                            $('#dept').text(result.Department);
+                            $('#level').text(result.Level);
+                            $('#matNo').text(result.MatricNo);
+                            $("#dData").text($("#txtDummy").val());
+                            message("Data successfully loaded", "green");
+                        }
+                        else {
+                            message(result.Error, "red");
+                        }
+                    }
+                })
+            })
+        })
+    </script>
+
+    <style>
+        .invisible {
+            visibility: hidden;
+        }
+    </style>
+</body>
+</html>
