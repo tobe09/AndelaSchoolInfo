@@ -147,7 +147,7 @@ var checkDob = function checkDob(day, month, year) {
     var month = parseInt(month);
     var year = parseInt(year);
     
-    if (!isNaN(day) && !isNaN(month) && !isNaN(year) && day > 0 && month > 0 && year > 0) {
+    if (!isNaN(day) && !isNaN(month) && !isNaN(year) && (day > 0 && day <= 31) && (month > 0 && month <= 12) && year > 0) {
         
         //get milliseconds gap between birth date and today's date and convert to years
         var age = new Date() - new Date(year, month - 1, day);
@@ -198,11 +198,11 @@ var checkDob = function checkDob(day, month, year) {
 
     else {
         if (isNaN(day)) { status.message = 'Please enter a number for day of birth'; }
-        else if (day <= 0) { status.message = 'Day of birth must be greater than zero'; }
+        else if (day <= 0 || day > 31) { status.message = 'Please enter a valid day of birth'; }
         else if (isNaN(month)) { status.message = 'Please enter a number for month of birth'; }
-        else if (month <= 0) { status.message = 'Month of birth must be greater than zero'; }
+        else if (month <= 0 || month > 12) { status.message = 'Please enter a valid month of birth'; }
         else if (isNaN(year)) { status.message = 'Please enter a number for year of birth'; }
-        else { status.message = 'Year of birth must be greater than zero'; }
+        else { status.message = 'Please enter a valid year of birth'; }
     }
     
     return status;

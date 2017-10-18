@@ -335,13 +335,16 @@ $(function () {
                 url: "Students/" + query,
                 async: false,
                 success: function (result) {
+
                     if (typeof (result.Error) == "undefined") {
                         $('#txtDelStudent').val('');
+                        $('#matNoTd').removeClass('info').addClass('warning');
+
                         makeVisible('#headerInfoDel');
                         makeInvisible('#headerResDel');
-                        
                         makeVisible('#delResult');
                         makeVisible('#btnDelSubmit');
+
                         $('#delResultInfo').text("Student Details");
                         $('#guidDel').text(result._id);
                         $('#matNoDel').text(result.MatricNo);
@@ -379,6 +382,7 @@ $(function () {
             url: "Students/" + query,
             async: false,
             success: function (result) {
+                $('#matNoTd').removeClass('warning').addClass('info');
                 makeVisible('#headerResDel');
                 makeInvisible('#headerInfoDel');
                 makeInvisible('#btnDelSubmit');
