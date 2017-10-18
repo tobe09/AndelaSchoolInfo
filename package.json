@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "description": "TobeSchoolDemo",
   "main": "server.js",
+  "start": "server.js",
   "author": {
-    "name": "Tobenna",
+    "name": "Chineke Tobenna",
     "email": "chineketobenna@gmail.com"
   },
   "dependencies": {
