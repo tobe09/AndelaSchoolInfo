@@ -194,8 +194,9 @@ var checkPhoneNo = function checkPhoneNo(phoneNo) {
 }
 
 
-var minAge = 16;
-var maxAge = 70;
+var ageRange = { minAge: 16, maxAge: 70 };
+
+
 //check date of birth for validity using a gregorian calender (helper function)
 var checkDob = function checkDob(day, month, year) {
     var status = new Object();
@@ -213,7 +214,7 @@ var checkDob = function checkDob(day, month, year) {
         age = age / (1000 * 60 * 60 * 24 * 365.2425);
         
         //to account for student age with respect to the present
-        if (age < minAge || age > maxAge) {
+        if (age < ageRange.minAge || age >ageRange.maxAge) {
             
             if (age < minAge) {
                 status.message = "Student is too young (Age: " + parseInt(age) + "). Student should be between 16 and 70 years of age";
@@ -290,8 +291,8 @@ var newMatricNo = function newMatricNo(preMatricNo, allStudents) {
     for (var i = 0; i < allStudents.length; i++) {
         var existMatricNo = allStudents[i].MatricNo;
         
-        if (parseInt(existMatricNo.substr(4, 3)) >= endValue) {
-            postMatricNo = parseInt(matricNo.substr(4, 3)) + 1;         //get Last matric number for dept and level and add 1
+        if (parseInt(existMatricNo.substr(5, 3)) >= postMatricNo) {          //compare last 3 digits of matric number
+            postMatricNo = parseInt(existMatricNo.substr(5, 3)) + 1;         //get Last matric number for dept and level and add 1
         }
     }
     
@@ -331,5 +332,6 @@ module.exports = {
     isValidStudent: isValidStudent,
     newMatricNo: newMatricNo,
     pascalCase: pascalCase,
+    ageRange: ageRange,
     logError: logError
 }

@@ -15,8 +15,9 @@ var Departments = Database.Departments;                         //collection of 
 var Validation = require('./Scripts/Validation.js');
 var isValidStudent = Validation.isValidStudent;                 //validate stdudent information
 var newMatricNo = Validation.newMatricNo;                       //generate new matriculation number for student
-var logError = Validation.logError;                             //used to log errors to the console
 var pascalCase = Validation.pascalCase;                         //used to format a name in pascal casing
+var ageRange = Validation.ageRange;                             //denotes the minimum and maximum age of a student
+var logError = Validation.logError;                             //used to log errors to the console
 
 
 //to locate application files (relative to application root)
@@ -50,6 +51,10 @@ router.get("/dbTables/:tableName", function (req, res) {
         }
         case 'departments': {
             table = Departments;
+            break;
+        }
+        case 'ageRange': {
+            table = ageRange;
             break;
         }
     }
@@ -181,7 +186,7 @@ router.route("/Students/:Id")
     }
 })
 
-//update student information ("put" verb is idempotent, hence safer)
+//update student information (technically, the "put" verb is safe and idempotent, as opposed to post)
 .put(function (req, res) {
     var studentId = req.params.Id;
     

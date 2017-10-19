@@ -493,11 +493,16 @@ function addStudentLink() {
     makeVisible("#addStudent");
     makeVisible("#divFormAdd");
     makeInvisible("#divResultAdd");
+
     populateSelectFac('#facAdd', 'facListAdd');
     var fac = $('#facListAdd').val();
     populateSelectDept(fac, '#deptAdd', 'deptListAdd');
     var years = $('#deptListAdd').val();
     populateSelectLevel(years, '#levelAdd', 'levelListAdd');
+
+    getDays('dobDayAdd', '#dobDaySpanAdd');                                     //get select list with all the days in a month
+    getMonths('dobMonthAdd', '#dobMonthSpanAdd');                               //get select list with all the months in a year
+    getYears('dobYearAdd', '#dobYearSpanAdd');                                  //get select list with all expected birth years of student
 }
 
 //function for edit student link click
@@ -507,6 +512,10 @@ function editStudentLink() {
     makeVisible("#editStudent");
     makeInvisible("#editForm");
     makeInvisible("#editResult");
+
+    getDays('dobDayEdit', '#dobDaySpanEdit');
+    getMonths('dobMonthEdit', '#dobMonthSpanEdit');
+    getYears('dobYearEdit', '#dobYearSpanEdit');
 }
 
 //function for delete student link click
@@ -559,7 +568,7 @@ function message(control, msg, color) {
 function getStudentsInfo() {
     //initial values
     var students = {
-        Name: ['Select Using Student Name'],
+        Name: ["Select Using Student's Name"],
         Id: ['0']
     };
     $.ajax({
@@ -585,6 +594,52 @@ function validSearchText(query) {
     var queryRegex = new RegExp("^[a-zA-Z]{3}[0-9]{4}$");                   //regular expression to check if it in the form of a matric no
     status = queryRegex.test(query) || query.length == 24;                  //check if it is a matric no or an _id
     return status;
+}
+
+//to populate select list with maximum days in a month
+function getDays(listId, spanId) {
+    var days = [];
+    
+    //generate an array containing days from 1 - 31
+    for (var i = 1; i <= 31; i++) {             
+        days.push(i);
+    }
+
+    var daysList = generateSelectList(listId, days)
+    $(spanId).html(daysList);
+}
+
+//to populate select list with months of the year
+function getMonths(listId, spanId) {
+    var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    var monthValue = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    var monthsList = generateSelectList(listId, months, monthValue);
+    $(spanId).html(monthsList);
+}
+
+//to populate select list with expected birth years of students
+function getYears(listId, spanId) {
+    var years = [];
+    var ageRange;
+    
+    $.ajax({
+        type: "GET",
+        url: "dbTables/ageRange",
+        async: false,
+        success: function (ageRng) {
+            ageRange = ageRng;                                    //an object with minimum and maximum age
+        }
+    });
+
+    var highestYear = new Date().getFullYear() - ageRange.minAge;
+    var lowestYear = new Date().getFullYear() - ageRange.maxAge;
+
+    for (var i = highestYear; i >= lowestYear ; i--) {
+        years.push(i);
+    }
+
+    var yearsList = generateSelectList(listId, years);
+    $(spanId).html(yearsList);
 }
 
 //function to format a mongo db date to a formatted string
