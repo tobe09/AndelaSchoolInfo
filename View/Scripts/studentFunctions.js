@@ -642,10 +642,32 @@ function getYears(listId, spanId) {
     $(spanId).html(yearsList);
 }
 
-//function to format a mongo db date to a formatted string
+//function to convert a mongo db date to a formatted string
 function formatDate(stringDate) {
+    var formattedDate;
+
     var newDate = new Date(stringDate);
-    return newDate.toDateString();
+    var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    formattedDate = days[newDate.getDay() - 1];                                    //name of day of the week
+    var suffix = dateSuffix(newDate.getDate());                                     
+    formattedDate += ', ' + newDate.getDate() + suffix;                            //day of the month
+    formattedDate += ' ' + months[newDate.getMonth()];                             //name of month of the year
+    formattedDate += ', ' + newDate.getFullYear();                                 //numerical year
+
+    return formattedDate;
+}
+
+//function to get the suffix for a date
+function dateSuffix(date){
+    var suffix;
+
+    if (date % 10 == 1 && date != 11) { suffix = 'st'; }
+    else if (date % 10 == 2 && date != 12) { suffix = 'nd'; }
+    else if (date % 10 == 3 && date != 13) { suffix = 'rd'; }
+    else { suffix = 'th'; }
+
+    return suffix;
 }
 
 //function to get date and convert to array integer values
