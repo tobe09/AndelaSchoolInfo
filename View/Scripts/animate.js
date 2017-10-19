@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
 
 	//Smooth Scroll
 	$(function() {
@@ -22,7 +22,12 @@ $(document).ready(function() {
 		offset: {
 			top: $('header').height()
 		}
-	});
+    });
+
+    //Menu collapse
+    $('.nav a').click(function () {
+        $('.navbar-collapse').collapse('hide');
+    });
 
 	//Slider
 	$('.flexslider').flexslider({

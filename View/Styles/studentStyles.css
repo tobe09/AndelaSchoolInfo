@@ -1,11 +1,12 @@
 /*General*/
 body {
     margin-left: 2%;
-	font-family: 'Open Sans', sans-serif;
-	font-size: 14px;
-	font-size: medium;
-	-webkit-font-smoothing: antialiased;
-	-moz-font-smoothing: antialiased;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    font-size: medium;
+    -webkit-font-smoothing: antialiased;
+    -moz-font-smoothing: antialiased;
+    min-height: 100%;
 }
 
 #pageHeader {
@@ -60,6 +61,10 @@ body {
     width: 70%;
     text-align: center;
     font-size: large;
+}
+
+#mainContents {
+    min-height: calc(100vh - 500px);
 }
 
 .btnWarning{
@@ -283,15 +288,6 @@ body {
 	-moz-font-smoothing: antialiased;
 }
 
-#main-nav {
-}
-
-#mainContents {
-}
-
-#mainFooter{
-}
-
 .topPadding {
 	padding: 10px;
 }
@@ -434,7 +430,7 @@ ul {
 
 /*Nagivation*/
 #main-nav {
-	padding: 15px 0;
+	padding: 1%;/*15px 0;*/
 }
 
 /*Affix*/
@@ -649,256 +645,47 @@ ul {
 }
 
 /*About*/
-#about .about-heading {
+
+.fillSpace {
+    width: 100%;
+    height: 100%;
+}
+
+#about .heading {
 	text-align: center;
 }
 
-#about .about-heading h2 {
-	font-family: 'Josefin Sans', sans-serif;
-	font-weight: 700;
-	font-size: 45px;
-	text-transform: uppercase;
+#about h3{
+    color: #87dede;
 }
 
-#about .about-heading p {
-	margin-top: 20px;
-	line-height: 25px;
-	color: #8e8e8e;
-	margin-bottom: 50px;
+#about .subHeader{    
+    font-size: 22px;
+    text-transform: uppercase;
 }
 
-#about .about-left {
-	position: relative;
-    z-index: 2;
+#about .list{    
+    list-style: disc;
+    padding: 5px;
+    margin-left: 10px;
+    font-size: 17px;
 }
 
 #about .about-right:before {
 	content: "";
     border: 8px solid #e5eef0;
-	width: 120%;
-    height: 100%;
+	width: 105%;
+    height: 120%;
     position: absolute;
-    right: 0;
-    top: 0;
+    right: -4%;
+    top: -1%;
 }
 
-#about .about-right {
-	position: relative;
-	padding: 0 80px 150px 80px;
-}
-
-#about .about-right-heading h1 {
-	font-family: 'Raleway', sans-serif;
-	font-weight: 700;
-	padding-top: 100px;
-	text-transform: uppercase;
-}
-
-#about .about-right-boot:before {
-	content: "\f080";
-	font-family: 'FontAwesome';
-	font-size: 45px;
-	padding: 65px 30px 0 0;
-	float: left;
-	color: #01b1d7;
-}
-
-#about .about-right-wrapper {
-    padding-left: 0 0 50px 78px;
-    position: relative;
-	left: 0;
-	top: 75px;
-}
-
-#about .about-right-wrapper a {
-	font-family: 'Raleway', sans-serif;
-	font-weight: 700;
-	color: #282828;
-}
-
-#about .about-right-wrapper a:hover {
-	color: #01b1d7;
-}
-
-#about .about-right-wrapper p {
-	line-height: 28px;
-	margin-top: 20px;
-	color: #8e8e8e;
-}
-
-#about .about-right-best:before {
-	content: "\f201";
-	font-family: 'FontAwesome';
-	font-size: 45px;
-	padding: 65px 30px 0 0;
-	float: left;
-	color: #01b1d7;
-}
-
-#about .about-right-support:before {
-	content: "\f025";
-	font-family: 'FontAwesome';
-	font-size: 45px;
-	padding: 65px 30px 0 0;
-	float: left;
-	color: #01b1d7;
-}
-
-/*Media*/
-@media screen and (min-width: 320px) and (max-width: 520px) {
-	#about {
-		padding: 0;
-	}
-
-	#about .about-heading h2 {
-		margin-top: 30px;
-		font-size: 27px;
-	}
-
-	#about .about-heading p {
-		margin-top: 20px;
-		font-size: 12px;
-		line-height: 20px;
-	}
-
-	#about .about-right:before {
-		content: "";
-	    border: 8px solid #e5eef0;
-		width: 100%;
-	    height: 100%;
-	}
-
-	#about .about-right {
-		position: relative;
-		padding: 30px;
-		margin-top: 20px;
-	}
-
-	#about .about-right-heading h1 {
-		padding-top: 20px;
-		font-size: 25px;
-		text-align: center;
-	}
-
-	#about .about-right-boot:before {
-		font-size: 30px;
-		padding: 20px 20px 0 0;
-	}
-
-	#about .about-right-wrapper {
-	    position: relative;
-		left: 0;
-		top: 35px;
-	}
-
-	#about .about-right-wrapper a > h3 {
-		font-size: 20px;
-	}
-
-	#about .about-right-wrapper p {
-		margin-top: 20px;
-		font-size: 13px;
-	}
-
-	#about .about-right-best {
-		margin-top: 40px;
-	}
-
-	#about .about-right-best:before {
-		font-size: 30px;
-		padding: 20px 20px 0 0;
-	}
-
-	#about .about-right-support {
-		margin-top: 40px;
-	}
-
-	#about .about-right-support:before {
-		font-size: 30px;
-		padding: 20px 20px 0 0;
-	}
-}
-
-/*Media*/
-@media screen and (min-width: 521px) and (max-width: 980px) {
-	#about {
-		margin-top: 50px;
-		padding: 0;
-	}
-
-	#about .about-heading h2 {
-		margin-top: 30px;
-		font-size: 30px;
-	}
-
-	#about .about-heading p {
-		margin-top: 20px;
-		line-height: 20px;
-	}
-
-	#about .about-right:before {
-		content: "";
-	    border: 8px solid #e5eef0;
-		width: 100%;
-	    height: 100%;
-	}
-
-	#about .about-right {
-		position: relative;
-		padding: 30px;
-		margin-top: 20px;
-	}
-
-	#about .about-right-heading h1 {
-		padding-top: 20px;
-		font-size: 25px;
-		text-align: center;
-	}
-
-	#about .about-right-boot:before {
-		font-size: 30px;
-		padding: 20px 20px 0 0;
-	}
-
-	#about .about-right-wrapper {
-	    position: relative;
-		left: 0;
-		top: 35px;
-	}
-
-	#about .about-right-wrapper a > h3 {
-		font-size: 20px;
-	}
-
-	#about .about-right-wrapper p {
-		margin-top: 20px;
-		font-size: 13px;
-	}
-
-	#about .about-right-best {
-		margin-top: 40px;
-	}
-
-	#about .about-right-best:before {
-		font-size: 30px;
-		padding: 20px 20px 0 0;
-	}
-
-	#about .about-right-support {
-		margin-top: 40px;
-	}
-
-	#about .about-right-support:before {
-		font-size: 30px;
-		padding: 20px 20px 0 0;
-	}
-
-}
 
 /*About bg*/
 #about-bg {
 	position: relative;
-	background-image: url(../images/about/about2.jpg);
+	background-image: url(/View/Images/about/about2.jpg);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -914,191 +701,16 @@ ul {
 	z-index: -2;
 }
 
-.about-bg-heading h1 {
-	font-size: 30px
-}
 
-.about-bg-heading p {
-	font-family: 'Raleway', sans-serif;
-	font-weight: 700;
-	font-weight: 400;
-	font-size: 15px;
-}
-
-.about-bg-wrapper {
-	color: #fff;
-	text-align: center;
-	margin-top: 20px;
-	z-index: -2;
-}
-
-#about-bg .about-bg-wrapper .count {
-	font-family: 'Raleway', sans-serif;
-	font-weight: 900;
-	font-size: 35px;
-	margin-right: 20px;
-	text-align: center;
-	float: left;
-	color: #01b1d7;
-}
-
-#about-bg .about-bg-wrapper p {
-	font-family: 'Raleway', sans-serif;
-	font-weight: 400;
-	font-size: 16px;
-	margin-top: 20px;
-	float: left;
-}
-
-/*Media*/
-@media screen and (min-width: 320px) and (max-width: 520px) {
-	.about-bg-heading h1 {
-		font-size: 22px;
-	}
-
-	.about-bg-wrapper {
-		margin-left: 25%;
-	}
-
-}
-
-/*Media*/
-@media screen and (min-width: 521px) and (max-width: 980px) {
-	.about-bg-heading h1 {
-		font-size: 30px;
-	}
-
-	.about-bg-wrapper {
-		margin-left: 35%;
-	}
-
-}
-
-.inner-box button {
-	background-color: #01b1d7;
-	width: 120px;
-	height: 35px;
-	color: #fff;
-}
-
-.inner-box button:hover {
-	background-color: #fff;
-	color: #01b1d7;
-}
-
-/*Contact*/
-#contact {
-	margin-top: 100px;
-}
-
-#contact .contact-heading {
-	text-align: center;
-}
-
-#contact .contact-heading h2 {
-	font-family: 'Josefin Sans', sans-serif;
-	font-weight: 700;
-	font-size: 45px;
-	text-transform: uppercase;
-}
-
-#contact .contact-heading p {
-	margin-top: 20px;
-	line-height: 25px;
-	color: #8e8e8e;
-	margin-bottom: 50px;
-}
-
-.validation {
-    color: red;
-    display:none;
-    margin: 0 0 20px;
-    font-weight:400;
-    font-size:13px;
-}
-
-#sendmessage {
-    color: green;
-    border:1px solid green;
-    display:none;
-    text-align:center;
-    padding:15px;
-    font-weight:600;
-    margin-bottom:15px;
-}
-
-#errormessage {
-    color: red;
-    display:none;
-    border:1px solid red;
-    text-align:center;
-    padding:15px;
-    font-weight:600;
-    margin-bottom:15px;
-}
-
-#sendmessage.show, #errormessage.show, .show {
-	display:block;
-}
-
-/*Map*/
-#google-map{
-    position:relative;
-    margin-top:10px;
-    height: 400px;
-}
-
-/*Client*/
-#client {
-	margin-top: 100px;
-	text-align: center;
-}
-
-#client .col-md-2 {
-	height: 100px;
-}
-
-#client span {
-	height: 100%;
-	display: inline-block;
-	vertical-align: middle;
-}
-
-#client img {
-	max-height: 100px;
-	vertical-align: middle;
-}
-
-/*Media*/
-@media screen and (min-width: 320px) and (max-width: 520px) {
-	#contact {
-		margin-top: 50px;
-	}
-
-	#contact .contact-heading h2 {
-		font-size: 27px;
-	}
-
-	#contact .contact-heading p {
-		font-size: 13px;
-	}
-}
-
-/*Media*/
-@media screen and (min-width: 521px) and (max-width: 980px) {
-	#contact {
-		margin-top: 50px;
-	}
-
-	#contact .contact-heading h2 {
-		font-size: 30px;
-	}
-
-}
 
 /*Footer*/
+#mainFooter {
+    bottom: 0;
+    margin-top: 7%;
+    margin-bottom: 1%;
+}
+
 #footer {
-	margin-top: 100px;
 	background-color: #181818;
 	padding: 50px 0;
 }

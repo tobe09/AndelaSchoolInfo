@@ -9,8 +9,8 @@ var Levels = Database.Levels;
 var isValidStudent = function isValidStudent(student) {
     var status = new Object();
     
-    var firstNameValid = checkName(student.FirstName);
-    var lastNameValid = checkName(student.LastName);
+    var lastNameValid = checkName(student.LastName, 'surname');
+    var firstNameValid = checkName(student.FirstName, 'firstname');
     var facultyValid = checkFaculty(student.Faculty);
     var deptValid = false;
     if (facultyValid) {                                                          //if faculty is valid, check department's validity
@@ -21,21 +21,39 @@ var isValidStudent = function isValidStudent(student) {
     var phoneNoValid = checkPhoneNo(student.PhoneNo);
     var dobValid = checkDob(student.Day, student.Month, student.Year);
     
-    if (firstNameValid && lastNameValid && facultyValid && deptValid && levelValid && emailValid && phoneNoValid && dobValid.isValid) {
+    if (firstNameValid.isValid && lastNameValid.isValid && facultyValid.isValid && deptValid &&
+         levelValid.isValid && emailValid.isValid && phoneNoValid.isValid && dobValid.isValid) {
         status.isValid = true;
         status.message = "Valid Student";
     }
     else {
-        //generate message relating to invalid property
+        //generate message relating to invalid data/property
         status.isValid = false;
-        if (!lastNameValid) { status.message = "Invalid Last Name."; }
-        else if (!firstNameValid) { status.message = "Invalid First Name."; }
-        else if (!facultyValid) { status.message = "Faculty chosen does not exist in our database."; }
-        else if (!deptValid) { status.message = "Department does not exist for chosen faculty."; }
-        else if (!levelValid) { status.message = "Invalid Level. Level should either 100, 200, 300, 400, 500 0r 600."; }
-        else if (!dobValid.isValid) { status.message = dobValid.message; }
-        else if (!phoneNoValid) { status.message = "Invalid Phone Number."; }
-        else { status.message = "Invalid Email Address."; }
+        if (!lastNameValid.isValid) {
+            status.message = lastNameValid.message;
+        }
+        else if (!firstNameValid.isValid) {
+            status.message = firstNameValid.message;
+        }
+        else if (!facultyValid.isValid) {
+            status.message = facultyValid.message;
+        }
+        else if (!deptValid.isValid) {
+            s
+            tatus.message = deptValid.message;
+        }
+        else if (!levelValid.isValid) {
+            status.message = levelValid.message;
+        }
+        else if (!dobValid.isValid) {
+            status.message = dobValid.message;
+        }
+        else if (!phoneNoValid.isValid) {
+            status.message = phoneNoValid.message;
+        }
+        else {
+            status.message = emailValid.message;
+        }
     }
     
     return status;
@@ -43,15 +61,23 @@ var isValidStudent = function isValidStudent(student) {
 
 
 //check if a valid name is sent (helper function)
-var checkName = function checkName(name) {
-    var status;
+var checkName = function checkName(name, nameType) {
+    var status = new Object();                                                          //object representing success or failure status
+    status.isValid = false;
     
+    if (nameType == null) nameType = 'name';
+
     //name must contain at least 2 characters  
-    if (name.length > 2) {
-        status = true;
+    if (name.length <= 0) {
+        status.message = 'Please enter your ' + nameType;
     }
+    else if (name.length <=2) {
+        status.message = pascalCase(nameType) + ' should consist of three or more characters';
+    }
+    //valid name
     else {
-        status = false;
+        status.isValid = true;
+        status.message = "Valid " + nameType;
     }
     
     return status;
@@ -60,11 +86,15 @@ var checkName = function checkName(name) {
 
 //loop through Faculties collection to validate faculty (helper function)
 var checkFaculty = function checkFaculty(faculty) {
-    var status = false;
+    var status = new Object();
+    status.isValid = false;
+    status.message = 'Invalid faculty. Faculty type is not registered';
     
     for (var i = 0; i < Faculties.length; i++) {
+
         if (Faculties[i].Faculty == faculty) {
-            status = true;
+            status.isValid = true;
+            status.messsage = 'Valid faculty';
             break;
         }
     }
@@ -75,7 +105,9 @@ var checkFaculty = function checkFaculty(faculty) {
 
 //loop through Departments collection to validate department (helper function)
 var checkDepts = function checkDepts(dept, fac) {
-    var status = false;
+    var status = new Object();
+    status.isValid = false;
+    status.message = 'Invalid department. Department type does not exist for selected faculty';
     
     for (var i = 0; i < Departments.length; i++) {
         
@@ -83,11 +115,14 @@ var checkDepts = function checkDepts(dept, fac) {
             
             //check department under selected faculty
             for (var j = 0; j < Departments[i].Depts.length; j++) {
+
                 if (Departments[i].Depts[j].Department == dept) {
-                    status = true;
+                    status.isValid = true;
+                    status.message = 'Valid department';
                     break;
                 }
             }
+
             break;
         }
     }
@@ -98,13 +133,16 @@ var checkDepts = function checkDepts(dept, fac) {
 
 //loop through Levels collection to validate level (helper function)
 var checkLevel = function checkLevel(level) {
-    var status = false;
+    var status = new Object();
+    status.isValid = false;
+    status.message = 'Invalid level. Selected level is not registered';
     
     if (typeof (Levels.Error) == 'undefined') {
         
         for (var i = 0; i < Levels.length; i++) {
             if (Levels[i].Level == level) {
-                status = true;
+                status.isValid = true;
+                status.message = 'Valid level';
                 break;
             }
         }
@@ -116,10 +154,20 @@ var checkLevel = function checkLevel(level) {
 
 //to validate email address (helper function)
 var checkEmail = function checkEmail(email) {
-    var status;
-    
+    var status = new Object();
     var emailRegEx = new RegExp("^[(\\w)+@(\\w)+\\.(\\w)+$]{5,32}");                 //regular expression matching a standard email address
-    status = emailRegEx.test(email);
+
+    status.isValid = new RegExp(emailRegEx).test(email);
+    
+    if (email.length == 0) {
+        status.message = 'Please enter your email address';
+    }
+    if (!status.isValid) {
+        status.message = 'Invalid email address format';
+    }
+    else {
+        status.message = 'Valid email address';
+    }
     
     return status;
 }
@@ -127,10 +175,20 @@ var checkEmail = function checkEmail(email) {
 
 //to validate phone number (phone number can start with a "+" sign) (helper function)
 var checkPhoneNo = function checkPhoneNo(phoneNo) {
-    var status;
+    var status = new Object();
+    var phoneNoRegEx = new RegExp("^\\+?[\\d]{7,16}$");                              //regular expression matching a standard phone number with an optional '+'
+
+    status.isValid = phoneNoRegEx.test(phoneNo);
     
-    var phoneNoRegEx = new RegExp("^\\+?[\\d]{4,16}$");                              //regular expression matching a standard email address
-    status = phoneNoRegEx.test(phoneNo);
+    if (phoneNo.length == 0) {
+        status.message = 'Please enter your phone number';
+    }
+    else if (!status.isValid) {
+        status.message = 'Invalid phone number';
+    }
+    else {
+        status.message = 'Valid phone number';
+    }
     
     return status;
 }
@@ -138,7 +196,7 @@ var checkPhoneNo = function checkPhoneNo(phoneNo) {
 
 var minAge = 16;
 var maxAge = 70;
-//check date of birth for validity (helper function)
+//check date of birth for validity using a gregorian calender (helper function)
 var checkDob = function checkDob(day, month, year) {
     var status = new Object();
     status.isValid = false
@@ -147,20 +205,21 @@ var checkDob = function checkDob(day, month, year) {
     var month = parseInt(month);
     var year = parseInt(year);
     
-    if (!isNaN(day) && !isNaN(month) && !isNaN(year) && (day > 0 && day <= 31) && (month > 0 && month <= 12) && year > 0) {
+    //check validity of individual entries
+    if (!isNaN(day) && !isNaN(month) && !isNaN(year) && (day > 0 && day <= 31) && (month > 0 && month <= 12) && (year > 1900 && year < new Date().getFullYear())) {
         
         //get milliseconds gap between birth date and today's date and convert to years
         var age = new Date() - new Date(year, month - 1, day);
-        age = age / (1000 * 60 * 60 * 24 * 365.25);
+        age = age / (1000 * 60 * 60 * 24 * 365.2425);
         
         //to account for student age with respect to the present
         if (age < minAge || age > maxAge) {
             
             if (age < minAge) {
-                status.message = "Student is too young (" + parseInt(age) + "). Student should be between 16 and 70 years of age";
+                status.message = "Student is too young (Age: " + parseInt(age) + "). Student should be between 16 and 70 years of age";
             }
             else {
-                status.message = "Student is too old (" + parseInt(age) + "). Student should be between 16 and 70 years of age";
+                status.message = "Student is too old (Age: " + parseInt(age) + "). Student should be between 16 and 70 years of age";
             }
         }
         else {
@@ -197,12 +256,24 @@ var checkDob = function checkDob(day, month, year) {
     }
 
     else {
-        if (isNaN(day)) { status.message = 'Please enter a number for day of birth'; }
-        else if (day <= 0 || day > 31) { status.message = 'Please enter a valid day of birth'; }
-        else if (isNaN(month)) { status.message = 'Please enter a number for month of birth'; }
-        else if (month <= 0 || month > 12) { status.message = 'Please enter a valid month of birth'; }
-        else if (isNaN(year)) { status.message = 'Please enter a number for year of birth'; }
-        else { status.message = 'Please enter a valid year of birth'; }
+        if (isNaN(day)) {
+            status.message = 'Please enter a number for day of birth';
+        }
+        else if (day <= 0 || day > 31) {
+            status.message = 'Please enter a valid day of birth';
+        }
+        else if (isNaN(month)) {
+            status.message = 'Please enter a number for month of birth';
+        }
+        else if (month <= 0 || month > 12) {
+            status.message = 'Please enter a valid month of birth';
+        }
+        else if (isNaN(year)) {
+            status.message = 'Please enter a number for year of birth';
+        }
+        else {
+            status.message = 'Please enter a valid year of birth';
+        }
     }
     
     return status;
@@ -210,31 +281,41 @@ var checkDob = function checkDob(day, month, year) {
 
 
 //generate a new matric number for the student
-var newMatricNo = function newMatricNo(student, allStudents) {
-    var matricNo;
+var newMatricNo = function newMatricNo(preMatricNo, allStudents) {
+    var matricNo = preMatricNo;
+
+    var postMatricNo = 1;                                               //initial value of post-fix value of matric number
     
-    //first three letters of department and to first digit of level
-    var startValue = student.Department.substr(0, 3);
-    startValue = startValue.toUpperCase() + (student.Level / 100);
-    var endValue = 1;                                               //initial value of post-fix number
-    
-    //loop through all students
+    //loop through all students in selected department and level
     for (var i = 0; i < allStudents.length; i++) {
-        matricNo = allStudents[i].MatricNo;
+        var existMatricNo = allStudents[i].MatricNo;
         
-        if (matricNo.substr(0, 4) == startValue && parseInt(matricNo.substr(4, 3)) >= endValue) {
-            endValue = parseInt(matricNo.substr(4, 3)) + 1;         //get Last matric number for dept and level and add 1
+        if (parseInt(existMatricNo.substr(4, 3)) >= endValue) {
+            postMatricNo = parseInt(matricNo.substr(4, 3)) + 1;         //get Last matric number for dept and level and add 1
         }
     }
     
-    //maximun of three digits
-    endValue += "";                                                 //convert to string
-    if (endValue.length == 1) { endValue = "00" + endValue; }
-    else if (endValue.length == 2) { endValue = "0" + endValue; }
+    //maximun of three digits length
+    postMatricNo += "";                                                 //convert to string
+    if (postMatricNo.length == 1) {
+        postMatricNo = "00" + postMatricNo;
+    }
+    else if (postMatricNo.length == 2) {
+        postMatricNo = "0" + postMatricNo;
+    }
     
-    matricNo = startValue + endValue;                               //concatenate values to form matric number
+    matricNo += postMatricNo;                                           //concatenate values to form matric number
     
     return matricNo;
+}
+
+
+//convert a string to pascal casing (with the first letter capitalized and other letters in lower case)
+var pascalCase = function pascalCase(name){
+    var modifiedName;
+    modifiedName = name.substr(0, 1).toUpperCase();
+    modifiedName += name.substr(1).toLowerCase();
+    return modifiedName;
 }
 
 
@@ -249,5 +330,6 @@ var logError = function logError(err) {
 module.exports = {
     isValidStudent: isValidStudent,
     newMatricNo: newMatricNo,
+    pascalCase: pascalCase,
     logError: logError
 }

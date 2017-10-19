@@ -21,7 +21,7 @@ $(function () {
     
     
     //GET ONE STUDENT SECTION
-    //executes when one student link is clickerd
+    //executes when one student link is clicked
     $("#oneLink").on("click", oneStudentLink)
     $("#oneLinkFooter").on("click", oneStudentLink)
     

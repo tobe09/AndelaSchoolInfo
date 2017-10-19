@@ -15,7 +15,8 @@ var Departments = Database.Departments;                         //collection of 
 var Validation = require('./Scripts/Validation.js');
 var isValidStudent = Validation.isValidStudent;                 //validate stdudent information
 var newMatricNo = Validation.newMatricNo;                       //generate new matriculation number for student
-var logError = Validation.logError;
+var logError = Validation.logError;                             //used to log errors to the console
+var pascalCase = Validation.pascalCase;                         //used to format a name in pascal casing
 
 
 //to locate application files (relative to application root)
@@ -87,11 +88,11 @@ router.route("/Students")
     
     //populate 'student' object properties if student details is valid
     if (isValidStudnt.isValid) {
-        var student = new Students();                                   //student to be added
+        var student = new Students();                                                   //student to be added
         
-        student.FirstName = newStudent.FirstName;
-        student.LastName = newStudent.LastName;
-        student.MiddleName = newStudent.MiddleName;
+        student.LastName = pascalCase(newStudent.LastName);
+        student.FirstName = pascalCase(newStudent.FirstName);
+        student.MiddleName = pascalCase(newStudent.MiddleName);
         student.Faculty = newStudent.Faculty;
         student.Department = newStudent.Department;
         student.Level = newStudent.Level;
@@ -110,7 +111,8 @@ router.route("/Students")
                 res.json({ "Error": "Error getting students" });
             }
             else {
-                var matricNo = newMatricNo(newStudent, allStudents);
+                preMatricNo = preMatricNo.substr(1, 4);                                 //to remove leading '^'
+                var matricNo = newMatricNo(preMatricNo, allStudents);
                 
                 //add student matriculation number
                 student.MatricNo = matricNo;
@@ -129,7 +131,7 @@ router.route("/Students")
                         }
                     }
                     else {
-                        res.json(student);                                  //return student
+                        res.json(student);                                              //return student
                     }
                 })
             }
@@ -196,9 +198,9 @@ router.route("/Students/:Id")
             var isValidStudnt = isValidStudent(updatedStudent)
             
             if (isValidStudnt.isValid) {
-                student.FirstName = updatedStudent.FirstName;
-                student.LastName = updatedStudent.LastName;
-                student.MiddleName = updatedStudent.MiddleName;
+                student.LastName = pascalCase(updatedStudent.LastName);
+                student.FirstName = pascalCase(updatedStudent.FirstName);
+                student.MiddleName = pascalCase(updatedStudent.MiddleName);
                 student.Faculty = updatedStudent.Faculty;
                 student.DateOfBirth = new Date(updatedStudent.Year, updatedStudent.Month - 1, updatedStudent.Day);
                 student.PhoneNo = updatedStudent.PhoneNo;
@@ -218,7 +220,9 @@ router.route("/Students/:Id")
                             res.json({ "Error": errorMsg });
                         }
                         else {
-                            var matricNo = newMatricNo(updatedStudent, allStudents);
+                            preMatricNo = preMatricNo.substr(1, 4);                                 //to remove leading '^'
+
+                            var matricNo = newMatricNo(preMatricNo, allStudents);
                             
                             //update student information
                             student.Department = updatedStudent.Department;
@@ -229,7 +233,7 @@ router.route("/Students/:Id")
                         }
                     })
                 }
-                //if no change is required for matric number
+                //no change to department and level
                 else {
                     saveUpdatedStudent(student);
                 }
