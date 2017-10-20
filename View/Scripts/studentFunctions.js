@@ -113,6 +113,18 @@ $(function () {
         populateSelectLevel(years, '#levelAdd', 'levelListAdd');
     })
     
+    //executes when the year of birth (for add student page) is changed
+    $(document.body).on('change', "#dobYearAdd", function (e) {
+        e.preventDefault();
+        repopulateDob('#dobDaySpanAdd', 'dobDayAdd', '#dobMonthAdd', '#dobYearAdd');
+    })
+    
+    //executes when the month of birth (for add student page) is changed
+    $(document.body).on('change', "#dobMonthAdd", function (e) {
+        e.preventDefault();
+        repopulateDob('#dobDaySpanAdd', 'dobDayAdd', '#dobMonthAdd', '#dobYearAdd');
+    })
+
     //executes when a student is to be added
     $("#btnAddSubmit").on("click", function () {
         //initialize student information for submission/posting
@@ -266,6 +278,18 @@ $(function () {
         e.preventDefault();
         var years = $('#deptListEdit').val();
         populateSelectLevel(years, '#levelEdit', 'levelListEdit');
+    })
+    
+    //executes when the year of birth (for edit student page) is changed
+    $(document.body).on('change', "#dobYearEdit", function (e) {
+        e.preventDefault();
+        repopulateDob('#dobDaySpanEdit', 'dobDayEdit', '#dobMonthEdit', '#dobYearEdit');
+    })
+    
+    //executes when the month of birth (for edit student page) is changed
+    $(document.body).on('change', "#dobMonthEdit", function (e) {
+        e.preventDefault();
+        repopulateDob('#dobDaySpanEdit', 'dobDayEdit', '#dobMonthEdit', '#dobYearEdit');
     })
     
     //eecutes after modification of student information
@@ -499,10 +523,10 @@ function addStudentLink() {
     populateSelectDept(fac, '#deptAdd', 'deptListAdd');
     var years = $('#deptListAdd').val();
     populateSelectLevel(years, '#levelAdd', 'levelListAdd');
-
-    getDays('dobDayAdd', '#dobDaySpanAdd');                                     //get select list with all the days in a month
+    
+    getYears('dobYearAdd', '#dobYearSpanAdd');                                   //get select list with all expected birth years of student
     getMonths('dobMonthAdd', '#dobMonthSpanAdd');                               //get select list with all the months in a year
-    getYears('dobYearAdd', '#dobYearSpanAdd');                                  //get select list with all expected birth years of student
+    getDays('dobDayAdd', '#dobDaySpanAdd');                                     //get select list with all the days in a month
 }
 
 //function for edit student link click
@@ -512,10 +536,10 @@ function editStudentLink() {
     makeVisible("#editStudent");
     makeInvisible("#editForm");
     makeInvisible("#editResult");
-
-    getDays('dobDayEdit', '#dobDaySpanEdit');
-    getMonths('dobMonthEdit', '#dobMonthSpanEdit');
+    
     getYears('dobYearEdit', '#dobYearSpanEdit');
+    getMonths('dobMonthEdit', '#dobMonthSpanEdit');
+    getDays('dobDayEdit', '#dobDaySpanEdit');
 }
 
 //function for delete student link click
@@ -596,17 +620,59 @@ function validSearchText(query) {
     return status;
 }
 
+//repopulate date of birth list
+function repopulateDob(daySpanId, dayListId, monthListId, yearListId) {
+    
+    //get the previously selected day
+    var previousDay = $('#' + dayListId).val();                             //reset the selected day
+
+    var year = $(yearListId).val();
+    var month = $(monthListId).val();
+    getDays(dayListId, daySpanId, month, year);                            //repopulate day of birth select list accordingly
+
+    $('#' + dayListId).val(previousDay);                                   //reset the selected day
+}
+
 //to populate select list with maximum days in a month
-function getDays(listId, spanId) {
+function getDays(listId, spanId, monthVal, yearVal) {
     var days = [];
     
+    var endDay;
+    if (monthVal == null || yearVal == null) {
+        endDay = 31;
+    }
+    else {
+        endDay = maxDays(monthVal, yearVal);
+    }
+    
     //generate an array containing days from 1 - 31
-    for (var i = 1; i <= 31; i++) {             
+    for (var i = 1; i <= endDay; i++) {
         days.push(i);
     }
-
+    
     var daysList = generateSelectList(listId, days)
     $(spanId).html(daysList);
+}
+
+//function to repopulate day on month change (gregorian calender
+function maxDays(monthVal, yearVal) {
+    var maxDay;
+    debugger
+    //check february and leap years
+    if (monthVal == 2 && (yearVal % 4 != 0 || (yearVal % 100 == 0 && yearVal % 400 != 0))) {
+        maxDay = 28;
+    }
+    else if (monthVal == 2 && (yearVal % 4 == 0 && (yearVal % 100 != 0 || yearVal % 400 == 0))) {
+        maxDay = 29;
+    }
+    else if (monthVal == 4 || monthVal == 6 || monthVal == 9 || monthVal == 11) {
+        maxDay = 30;
+    }
+    else {
+        maxDay = 31;
+    }
+
+    return maxDay;
 }
 
 //to populate select list with months of the year
