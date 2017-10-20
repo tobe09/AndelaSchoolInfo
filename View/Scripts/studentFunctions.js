@@ -713,9 +713,9 @@ function formatDate(stringDate) {
     var formattedDate;
 
     var newDate = new Date(stringDate);
-    var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    formattedDate = days[newDate.getDay() - 1];                                    //name of day of the week
+    formattedDate = days[newDate.getDay()];                                    //name of day of the week
     var suffix = dateSuffix(newDate.getDate());                                     
     formattedDate += ', ' + newDate.getDate() + suffix;                            //day of the month
     formattedDate += ' ' + months[newDate.getMonth()];                             //name of month of the year
@@ -737,8 +737,8 @@ function dateSuffix(date){
 }
 
 //function to get date and convert to array integer values
-function getDateInt(stringdate2) {
-    var newDate = new Date(stringdate2);
+function getDateInt(stringdate) {
+    var newDate = new Date(stringdate);
     var dateArray = [];
     dateArray.push(newDate.getDate());                                  //day
     dateArray.push(newDate.getMonth() + 1);                             //month
