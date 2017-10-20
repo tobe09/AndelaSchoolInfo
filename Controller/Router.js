@@ -30,10 +30,10 @@ var errorMsg = 'An error has occured';                          //to signify a s
 
 //to get application web page
 router.get('/', function (req, res) {
-    res.sendFile('View/StudentPage.html', { root: rootLocation });
+    res.sendFile('/View/StudentInfoPage.html', { root: rootLocation });
 });
 router.get('/StudentPage', function (req, res) {
-    res.sendFile('View/StudentPage.html', { root: rootLocation });
+    res.sendFile('/View/StudentInfoPage.html', { root: rootLocation });
 });
 
 

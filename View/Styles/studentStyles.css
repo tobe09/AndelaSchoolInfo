@@ -75,6 +75,10 @@ body {
     margin-right: 2%;
 }
 
+.left {
+    margin-left: 7%;
+}
+
 a {
 	text-decoration: none;
 	-moz-transition: all linear .3s;
