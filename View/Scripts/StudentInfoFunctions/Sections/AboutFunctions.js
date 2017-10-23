@@ -4,17 +4,15 @@ $(function (){
     /////////////////////////////////////////
 
     //executes  when the about link is clicked
-    $("#aboutLink").on("click", aboutLink)
-    $("#aboutLinkFooter").on("click", aboutLink)
+    $("#aboutLink").on("click", aboutLinkClick)
+    $("#aboutLinkFooter").on("click", aboutLinkClick)
 
     /////////////////////////////////////////
 })
 
 
-//HELPER FUNCTION FOR SECTION
-
 //function for about link click
-function aboutLink() {
+function aboutLinkClick() {
     clearValues()
     hideAll();
     makeVisible("#about");

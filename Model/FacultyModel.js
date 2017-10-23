@@ -23,13 +23,55 @@ var facultyEntry = Entry.dbEntry
 var localEntry = Entry.localEntry;
 
 
+var newFaculty = { Faculty: 'Agriculture and Forestry' };
+Faculties.push(newFaculty);
+localEntry(collectionName);
+newFaculty = new facultyModel(newFaculty);
+newFaculty.save(facultyEntry(collectionName, newFaculty));
+
 var newFaculty = { Faculty: 'Arts' };
 Faculties.push(newFaculty);
 localEntry(collectionName);
 newFaculty = new facultyModel(newFaculty);
 newFaculty.save(facultyEntry(collectionName, newFaculty));
 
-var newFaculty = { Faculty: 'Languages' };
+var newFaculty = { Faculty: 'Basic Medical Sciences' };
+Faculties.push(newFaculty);
+localEntry(collectionName);
+newFaculty = new facultyModel(newFaculty);
+newFaculty.save(facultyEntry(collectionName, newFaculty));
+
+var newFaculty = { Faculty: 'Clinical Sciences' };
+Faculties.push(newFaculty);
+localEntry(collectionName);
+newFaculty = new facultyModel(newFaculty);
+newFaculty.save(facultyEntry(collectionName, newFaculty));
+
+var newFaculty = { Faculty: 'Dentistry' };
+Faculties.push(newFaculty);
+localEntry(collectionName);
+newFaculty = new facultyModel(newFaculty);
+newFaculty.save(facultyEntry(collectionName, newFaculty));
+
+var newFaculty = { Faculty: 'Education' };
+Faculties.push(newFaculty);
+localEntry(collectionName);
+newFaculty = new facultyModel(newFaculty);
+newFaculty.save(facultyEntry(collectionName, newFaculty));
+
+var newFaculty = { Faculty: 'Law' };
+Faculties.push(newFaculty);
+localEntry(collectionName);
+newFaculty = new facultyModel(newFaculty);
+newFaculty.save(facultyEntry(collectionName, newFaculty));
+
+var newFaculty = { Faculty: 'Pharmacy' };
+Faculties.push(newFaculty);
+localEntry(collectionName);
+newFaculty = new facultyModel(newFaculty);
+newFaculty.save(facultyEntry(collectionName, newFaculty));
+
+var newFaculty = { Faculty: 'Public Health' };
 Faculties.push(newFaculty);
 localEntry(collectionName);
 newFaculty = new facultyModel(newFaculty);
@@ -41,7 +83,19 @@ localEntry(collectionName);
 newFaculty = new facultyModel(newFaculty);
 newFaculty.save(facultyEntry(collectionName, newFaculty));
 
+var newFaculty = { Faculty: 'Social Sciences' };
+Faculties.push(newFaculty);
+localEntry(collectionName);
+newFaculty = new facultyModel(newFaculty);
+newFaculty.save(facultyEntry(collectionName, newFaculty));
+
 var newFaculty = { Faculty: 'Technology' };
+Faculties.push(newFaculty);
+localEntry(collectionName);
+newFaculty = new facultyModel(newFaculty);
+newFaculty.save(facultyEntry(collectionName, newFaculty));
+
+var newFaculty = { Faculty: 'Veterianary Medicine' };
 Faculties.push(newFaculty);
 localEntry(collectionName);
 newFaculty = new facultyModel(newFaculty);

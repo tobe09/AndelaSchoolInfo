@@ -18,6 +18,7 @@ var newMatricNo = Validation.newMatricNo;                       //generate new m
 var pascalCase = Validation.pascalCase;                         //used to format a name in pascal casing
 var ageRange = Validation.ageRange;                             //denotes the minimum and maximum age of a student
 var logError = Validation.logError;                             //used to log errors to the console
+var deptPrefix = Validation.deptPrefix;                         //used to get a department's prefix
 
 
 //to locate application files (relative to application root)
@@ -25,10 +26,10 @@ var path = require('path');
 var rootLocation = path.join(__dirname, '../');
 
 
-var errorMsg = 'An error has occured';                          //to signify a server side error
+var errorMsg = 'Server-side error has occured';                          //to signify a server side error
 
 
-//to get application web page
+//get web page
 router.get('/', function (req, res) {
     res.sendFile('/View/StudentInfoPage.html', { root: rootLocation });
 });
@@ -57,6 +58,9 @@ router.get("/dbTables/:tableName", function (req, res) {
             table = ageRange;
             break;
         }
+        default: {
+            table = { Error: "Selected table was not found" };
+        }
     }
     
     res.json(table);
@@ -72,12 +76,9 @@ router.route("/Students")
     Students.find(function (err, allStudents) {
         if (err) {
             logError(err);
-            response = { "Error": errorMsg };
+            response = { Error: errorMsg };
         } 
-        else if (allStudents.length == 0) {
-            response = { "Error": "No student in database" }
-        }
-        else {
+        else {  
             response = allStudents;
         }
         
@@ -91,9 +92,9 @@ router.route("/Students")
     var newStudent = req.body;
     var isValidStudnt = isValidStudent(newStudent);
     
-    //populate 'student' object properties if student details is valid
+    //validate student details before creating student
     if (isValidStudnt.isValid) {
-        var student = new Students();                                                   //student to be added
+        var student = new Students();                                   //student to be added
         
         student.LastName = pascalCase(newStudent.LastName);
         student.FirstName = pascalCase(newStudent.FirstName);
@@ -106,20 +107,20 @@ router.route("/Students")
         student.Email = newStudent.Email;
         
         //start value of student matriculation number
-        var preMatricNo = "^" + newStudent.Department.substr(0, 3).toUpperCase() + (newStudent.Level / 100);      
+        var preMatricNo = "^" + deptPrefix(newStudent.Department, newStudent.Faculty) + (newStudent.Level / 100);      
         
-        //get all students in the same category and generate unique matric number
-        Students.find({ MatricNo: { $regex: preMatricNo } }, function (err, allStudents) {
+        //get all students in the same department and level and generate unique matric number
+        Students.find({ MatricNo: { $regex: preMatricNo } }, function (err, matchingStudents) {
             
             if (err) {
                 logError(err);
-                res.json({ "Error": "Error getting students" });
+                res.json({ Error: errorMsg });
             }
             else {
-                preMatricNo = preMatricNo.substr(1, 4);                                 //to remove leading '^'
-                var matricNo = newMatricNo(preMatricNo, allStudents);
+                preMatricNo = preMatricNo.substr(1, 4);                                 //to remove leading '^' sign
+                var matricNo = newMatricNo(preMatricNo, matchingStudents);              //new matriculation number generated
                 
-                //add student matriculation number
+                //add student matriculation number to the new student object properties
                 student.MatricNo = matricNo;
                 
                 //save updated student
@@ -128,11 +129,11 @@ router.route("/Students")
                     if (err) {
                         //already existing email error
                         if (typeof (err.errors.Email) == 'object') {
-                            res.json({ "Error": 'Email address already exists' });
+                            res.json({ Error: 'Email address already exists' });
                         }
                         else {
                             logError(err);
-                            res.json({ "Error": errorMsg });
+                            res.json({ Error: errorMsg });
                         }
                     }
                     else {
@@ -144,7 +145,7 @@ router.route("/Students")
     }
     //for invalid student details
     else {
-        res.json({ "Error": isValidStudnt.message });
+        res.json({ Error: isValidStudnt.message });
     }
 });
 
@@ -157,11 +158,12 @@ router.route("/Students/:Id")
     
     //to validate objectId
     var checkObjectId = require('mongoose').Types.ObjectId;
-    var validObjectId = checkObjectId.isValid(studentQuery);
+    var isValidObjectId = checkObjectId.isValid(studentQuery);
     
-    if (validObjectId) {                                        //check if the string has 12 characters for a GUID
+    if (isValidObjectId) {                                        //check if the string is a GUID
         Students.find({ _id: studentQuery }, sendResult);
-    } else {
+    } 
+    else {
         Students.find({ MatricNo: studentQuery.toUpperCase() }, sendResult);
     };
     
@@ -194,7 +196,7 @@ router.route("/Students/:Id")
         
         if (err) {
             logError(err);                                                          //to handle errors/exceptions
-            res.json({ "Error": errorMsg });
+            res.json({ Error: errorMsg });
         }
         else {
             var updatedStudent = req.body;
@@ -211,23 +213,22 @@ router.route("/Students/:Id")
                 student.PhoneNo = updatedStudent.PhoneNo;
                 student.Email = updatedStudent.Email;
                 
-                //check for changes in department or level (and also faculties indirectly)
+                //check for changes in department or level
                 if (student.Department != updatedStudent.Department || student.Level != updatedStudent.Level) {
                     
                     //start value of student matriculation number
-                    var preMatricNo = "^" + updatedStudent.Department.substr(0, 3).toUpperCase() + (updatedStudent.Level / 100);
+                    var preMatricNo = "^" + deptPrefix(updatedStudent.Department, updatedStudent.Faculty) + (updatedStudent.Level / 100);    
 
                     //get all students in the same category and generate unique matric number
-                    Students.find({ MatricNo: { $regex: preMatricNo } },function (err, allStudents) {
+                    Students.find({ MatricNo: { $regex: preMatricNo } },function (err, matchingStudents) {
                         
                         if (err) {
                             logError(err);
                             res.json({ "Error": errorMsg });
                         }
                         else {
-                            preMatricNo = preMatricNo.substr(1, 4);                                 //to remove leading '^'
-
-                            var matricNo = newMatricNo(preMatricNo, allStudents);
+                            preMatricNo = preMatricNo.substr(1, 4);                                 //to remove leading '^' sign
+                            var matricNo = newMatricNo(preMatricNo, matchingStudents);
                             
                             //update student information
                             student.Department = updatedStudent.Department;
@@ -263,6 +264,7 @@ router.route("/Students/:Id")
                 }
             } 
 
+            //erroneous data entry
             else {
                 res.json({ "Error": isValidStudnt.message });
             }
@@ -280,7 +282,7 @@ router.route("/Students/:Id")
         
         if (err) {
             logError(err);
-            response = { "Error": errorMsg };
+            response = { Error: errorMsg };
         }
         else {
             response = deletedStudent;
@@ -293,6 +295,6 @@ router.route("/Students/:Id")
 
 //to send other files/data to the database
 router.get('*', function (req, res) {
-    var relativeAddress = req.url;                                          //get address of file from application root location
+    var relativeAddress = req.url;                                          //get address of file from request object
     res.sendFile(relativeAddress, { root: rootLocation });
 });

@@ -2,102 +2,119 @@
     //GET ONE STUDENT SECTION
 
     //executes when one student link is clicked
-    $("#oneLink").on("click", oneStudentLink)
-    $("#oneLinkFooter").on("click", oneStudentLink)
+    $("#oneLink").on("click", oneStudentLinkClick)
+    $("#oneLinkFooter").on("click", oneStudentLinkClick)
     
-    //executes when the selected faculty option (for add student page) is changed
+    //executes when the selected student from select list is changed
     $(document.body).on('change', "#allStudentListOne", function (e) {
-        e.preventDefault();                                             //get sudent identifier from student select list
-        var query = $("#allStudentListOne").val();                      //get sudent identifier from student select list
+        e.preventDefault();                                             
+        var query = $("#allStudentListOne").val();                      //get student identifier from student select list
         
-        if (query != '0') {                                             //ensure that a student is chosen
-            oneStudentInfo(query);
+        $('#txtIdOne').val('');                                         //reset text input  
+        if (query != '0') {                                             //ensure that a student is chosen using the select list value
+            getOneStudent(query, 'oneStudentInfoCallBack');             //ajax call to get selected student information
         }
         else {
             makeInvisible('#oneResult');                                //hide result div
             message("#msgOne", '');                                     //clear message
-        }
-        
-        $('#txtIdOne').val('');                                         //reset text input             
+        }         
     })
     
     //executes when the button to display single student is clicked
     $("#btnStudentOne").on("click", function () {
         var query = $("#txtIdOne").val();                               //get sudent identifier from input textbox
         
-        if (validSearchText(query)) {                                   //check validity of entry
-            oneStudentInfo(query);                                      //get student using text
-        }
-        else {
-            message("#msgOne", "Please enter a valid matriculation number", 'red');
-            makeInvisible('#oneResult');                                //hide result div
-        }
         $('#allStudentListOne').val('0');                               //reset select list
-    })
-    
-    //function to display the information of selected student
-    function oneStudentInfo(query) {
-        var student = getOneStudent(query);                             //get selected student
-        
-        if (typeof (student.Error) == "undefined") {
-            makeVisible('#oneResult');                                  //show result
-            
-            //populate table with information
-            $('#guidOne').text(student._id);
-            $('#matNoOne').text(student.MatricNo);
-            $('#lNameOne').text(student.LastName);
-            $('#othName').html(student.FirstName + "&nbsp;" + student.MiddleName);
-            $('#facOne').text(student.Faculty);
-            $('#deptOne').text(student.Department);
-            $('#levelOne').text(student.Level);
-            var dob = formatDate(student.DateOfBirth);                  //format date of birth as string
-            $('#dobOne').text(dob);
-            $('#phoneNoOne').text(student.PhoneNo);
-            $('#emailOne').text(student.Email);
-            dob = formatDate(student.DateReg);
-            $('#dRegOne').text(dob);
-            
-            message("#msgOne", 'Selected student information successfully generated', 'green');
+        if (validSearchText(query)) {                                   //check validity of entry
+            getOneStudent(query, 'oneStudentInfoCallBack');             //ajax call to get selected student using text value entered
         }
         else {
-            message("#msgOne", student.Error, 'red');
-            makeInvisible('#oneResult');
+            makeInvisible('#oneResult');                                //hide result div
+            message("#msgOne", "Please enter a valid matriculation number", 'red');
         }
-    }
+    })
 
     /////////////////////////////////////////
 })
 
-//HELPER FUNCTIONS FOR SECTION
 
 //function for one student link click
-function oneStudentLink() {
+function oneStudentLinkClick() {
     clearValues()
     hideAll();
     makeVisible("#oneStudent");
     makeInvisible("#oneResult");
     
-    var studentInfo = getStudentsInfo();
-    var studentHtmllist = generateSelectList('allStudentListOne', studentInfo.Name, studentInfo.Id);
-    $('#allStudentsOne').html(studentHtmllist);
-    $('#allStudentListOne').val('0');                                                   //set selected index to the first item with value '0'
+    getAllStudents('getStudentsListOneCallBack');                   //ajax call to get all student for select list
 }
 
-//get all students basic info
-function getStudentsInfo() {
-    //initial values
-    var students = {
-        Name: ["Select Using Student's Name"],
-        Id: ['0']
-    };
+
+//get all students basic info and populate select list
+function getStudentsListOneCallBack(studnts) {
     
-    var studnts = getAllStudents();
+    //student successfully generated
+    if (studnts!=null && typeof (studnts.Error) == 'undefined') {
+        //initial values
+        var students = {
+            Name: ["Select Student by Name"],
+            Id: ['0']
+        };
+        
+        //loop through array of all students and generate an array of students' name and _id for a select list
+        for (var i = 0; i < studnts.length; i++) {
+            students.Name.push(studnts[i].LastName + ", " + studnts[i].FirstName + " " + studnts[i].MiddleName);
+            students.Id.push(studnts[i]._id);
+        }
+        
+        var studentHtmllist = generateSelectList('allStudentListOne', students.Name, students.Id);          //generate select list of all students
+        $('#allStudentsOne').html(studentHtmllist);
+        $('#allStudentListOne').val('0');                                                             //set selected index to the first item with value '0'
+    }                                                                 
+
+    //exceptional situation
+    else {
+        if (studnts == null) {
+            message("#msgOne", ajaxErrMsg, 'red');
+        }
+        else {
+            message("#msgOne", studnts.Error, 'red');
+        }
+    }
+};
+
+
+//function to display the information of selected student
+function oneStudentInfoCallBack(student) {
     
-    //loop through array of all students and generate an array of their name and _id for a select list
-    for (var i = 0; i < studnts.length; i++) {
-        students.Name.push(studnts[i].LastName + ", " + studnts[i].FirstName + " " + studnts[i].MiddleName);
-        students.Id.push(studnts[i]._id);
+    if (student!=null && typeof (student.Error) == "undefined") {
+        makeVisible('#oneResult');                                  //show result
+        
+        //populate table with information
+        $('#guidOne').text(student._id);
+        $('#matNoOne').text(student.MatricNo);
+        $('#lNameOne').text(student.LastName);
+        $('#othName').html(student.FirstName + "&nbsp;" + student.MiddleName);
+        $('#facOne').text(student.Faculty);
+        $('#deptOne').text(student.Department);
+        $('#levelOne').text(student.Level);
+        var dob = formatDate(student.DateOfBirth);                  //format date of birth as a descriptive string
+        $('#dobOne').text(dob);
+        $('#phoneNoOne').text(student.PhoneNo);
+        $('#emailOne').text(student.Email);
+        dob = formatDate(student.DateReg);
+        $('#dRegOne').text(dob);
+        
+        message("#msgOne", 'Selected student information successfully generated', 'green');
     }
     
-    return students;
-};
+    //exceptional situation
+    else {
+        makeInvisible('#oneResult');
+        if (student == null) {
+            message("#msgOne", ajaxErrMsg, 'red');
+        }
+        else {
+            message("#msgOne", student.Error, 'red');
+        }
+    }
+}

@@ -4,55 +4,15 @@ $(function (){
     /////////////////////////////////////////
     
     //executes when the link to edit a student is clicked
-    $("#editLink").on("click", editStudentLink);
-    $("#editLinkFooter").on("click", editStudentLink);
+    $("#editLink").on("click", editStudentLinkClick);
+    $("#editLinkFooter").on("click", editStudentLinkClick);
     
     //executes when the button to get a single student information for editing is clicked
     $("#btnShowStudentEdit").on("click", function () {
         var query = $("#txtShowStudentEdit").val();
         
         if (validSearchText(query)) {                                                   //check validity of entry
-            var result = getOneStudent(query);                                          //get selected student
-            
-            if (typeof (result.Error) == "undefined") {
-                $('#txtShowStudentEdit').val('');
-                makeVisible("#editForm");
-                makeInvisible('#editResult');
-                
-                //populate span and generate lists
-                $('#guidEdit').text(result._id);
-                $('#matNoEdit').text(result.MatricNo);
-                $('#sNameEdit').val(result.LastName);
-                $('#fNameEdit').val(result.FirstName);
-                $('#mNameEdit').val(result.MiddleName);
-                
-                populateSelectFac('#facEdit', 'facListEdit');                           //generate faculties list from collection
-                $('#facListEdit').val(result.Faculty);
-                var fac = $('#facListEdit').val()//get faculty value
-                populateSelectDept(fac, '#deptEdit', 'deptListEdit');                   //generate departments list from faculty
-                $("#deptListEdit option").filter(function () {                          //set department select text option
-                    return this.text == result.Department;
-                }).prop('selected', true);
-                var years = $('#deptListEdit').val()//get year value of selected department
-                populateSelectLevel(years, '#levelEdit', 'levelListEdit');              //generate levels select list from department years      
-                $('#levelListEdit').val(result.Level);
-                
-                //get date of birth values
-                var dob = getDateArray(result.DateOfBirth);
-                $('#dobDayEdit').val(dob[0]);
-                $('#dobMonthEdit').val(dob[1]);
-                $('#dobYearEdit').val(dob[2]);
-                
-                $('#phoneNoEdit').val(result.PhoneNo);
-                $('#emailEdit').val(result.Email);
-                message('#msgEdit', "Make Required modifications", "brown");
-            }
-            //error condition
-            else {
-                message('#msgEdit', result.Error, "red");
-                makeInvisible("#editForm");
-                makeInvisible('#editResult');
-            }
+            getOneStudent(query, 'editStudentShowCallBack');                            //get selected student
         }
         //invalid query entered by used
         else {
@@ -81,7 +41,7 @@ $(function (){
     //executes when the year of birth (for edit student page) is changed
     $(document.body).on('change', "#dobYearEdit", function (e) {
         e.preventDefault();
-        repopulateDob('#dobDaySpanEdit', 'dobDayEdit', '#dobMonthEdit', '#dobYearEdit');
+        repopulateDob('#dobDaySpanEdit', 'dobDayEdit', '#dobMonthEdit', '#dobYearEdit');        //function to repopulate date of birth options according to changes made
     })
     
     //executes when the month of birth (for edit student page) is changed
@@ -105,31 +65,10 @@ $(function (){
             Email: $('#emailEdit').val(),
             PhoneNo: $('#phoneNoEdit').val()
         }
-        var query = $('#guidEdit').text();
+        var query = $('#guidEdit').text();                                              //get student's unique id
         
-        var result = modifyStudent(query, studentInfo);
-        
-        if (typeof (result.Error) == "undefined") {
-            makeInvisible("#editForm");
-            makeVisible('#editResult');
-            $('#guidEditRes').text(result._id);
-            $('#matNoEditRes').text(result.MatricNo);
-            $('#sNameEditRes').text(result.LastName);
-            $('#othNameEditRes').html(result.FirstName + "&nbsp;" + result.MiddleName);
-            $('#facEditRes').text(result.Faculty);
-            $('#deptEditRes').text(result.Department);
-            $('#levelEditRes').text(result.Level);
-            var dob = formatDate(result.DateOfBirth);
-            $('#dobEditRes').text(dob);
-            $('#phoneNoEditRes').text(result.PhoneNo);
-            $('#emailEditRes').text(result.Email);
-            message('#msgEdit', "Student information has been successfully modified", "green");
-        }
-        else {
-            message('#msgEdit', result.Error, "red");
-            makeVisible("#editForm");
-            makeInvisible('#editResult');
-        }
+        modifyStudent(query, studentInfo, 'editStudentResultCallBack');
+        return false                                                                    //to avoid page reload on 'put'
     })
     
     /////////////////////////////////////////
@@ -139,15 +78,96 @@ $(function (){
 //HELPER FUNCTION FOR SECTION
 
 //function for edit student link click
-function editStudentLink() {
+function editStudentLinkClick() {
     clearValues()
     hideAll();
     makeVisible("#editStudent");
     makeInvisible("#editForm");
     makeInvisible("#editResult");
     
-    var ageRange = getAgeRange();
-    acceptedYears('dobYearEdit', '#dobYearSpanEdit', ageRange);
+    acceptedYears('dobYearEdit', '#dobYearSpanEdit');
     getMonths('dobMonthEdit', '#dobMonthSpanEdit');
     getDays('dobDayEdit', '#dobDaySpanEdit');
+}
+
+//callback function to display student details to be modified
+function editStudentShowCallBack(result) {
+    
+    if (result != null && typeof (result.Error) == "undefined") {
+        $('#txtShowStudentEdit').val('');
+        makeVisible("#editForm");
+        makeInvisible('#editResult');
+        
+        //populate span and generate lists
+        $('#guidEdit').text(result._id);
+        $('#matNoEdit').text(result.MatricNo);
+        $('#sNameEdit').val(result.LastName);
+        $('#fNameEdit').val(result.FirstName);
+        $('#mNameEdit').val(result.MiddleName);
+        
+        populateSelectFac('#facEdit', 'facListEdit');                           //generate faculties list from collection
+        $('#facListEdit').val(result.Faculty);
+        var fac = $('#facListEdit').val()//get faculty value
+        populateSelectDept(fac, '#deptEdit', 'deptListEdit');                   //generate departments list from faculty
+        $("#deptListEdit option").filter(function () {                          //set department select text option
+            return this.text == result.Department;
+        }).prop('selected', true);
+        var years = $('#deptListEdit').val()//get year value of selected department
+        populateSelectLevel(years, '#levelEdit', 'levelListEdit');              //generate levels select list from department years      
+        $('#levelListEdit').val(result.Level);
+        
+        //get date of birth values
+        var dob = getDateArray(result.DateOfBirth);
+        $('#dobDayEdit').val(dob[0]);
+        $('#dobMonthEdit').val(dob[1]);
+        $('#dobYearEdit').val(dob[2]);
+        
+        $('#phoneNoEdit').val(result.PhoneNo);
+        $('#emailEdit').val(result.Email);
+        message('#msgEdit', "Make Required modifications", "brown");
+    }
+            //error condition
+    else {
+        makeInvisible("#editForm");
+        makeInvisible('#editResult');
+
+        if (result == null) {
+            message('#msgEdit', ajaxErrMsg, "red");
+        }
+        else {
+            message('#msgEdit', result.Error, "red");
+        }
+    }
+}
+
+//callback function to show results of modification
+function editStudentResultCallBack(result) {
+    
+    if (result != null && typeof (result.Error) == "undefined") {
+        makeInvisible("#editForm");
+        makeVisible('#editResult');
+        $('#guidEditRes').text(result._id);
+        $('#matNoEditRes').text(result.MatricNo);
+        $('#sNameEditRes').text(result.LastName);
+        $('#othNameEditRes').html(result.FirstName + "&nbsp;" + result.MiddleName);
+        $('#facEditRes').text(result.Faculty);
+        $('#deptEditRes').text(result.Department);
+        $('#levelEditRes').text(result.Level);
+        var dob = formatDate(result.DateOfBirth);
+        $('#dobEditRes').text(dob);
+        $('#phoneNoEditRes').text(result.PhoneNo);
+        $('#emailEditRes').text(result.Email);
+        message('#msgEdit', "Student information has been successfully modified", "green");
+    }
+    else {
+        makeVisible("#editForm");
+        makeInvisible('#editResult');
+
+        if (result == null) {
+            message('#msgEdit', ajaxErrMsg, "red");
+        }
+        else {
+            message('#msgEdit', result.Error, "red");
+        }
+    }
 }

@@ -5,15 +5,17 @@ var Departments = Database.Departments;
 var Levels = Database.Levels;
 
 
-//validate student details
+//validate student details using the student object
 var isValidStudent = function isValidStudent(student) {
     var status = new Object();
     
     var lastNameValid = checkName(student.LastName, 'surname');
-    var firstNameValid = checkName(student.FirstName, 'firstname');
+    var firstNameValid = checkName(student.FirstName, 'first name');
     var facultyValid = checkFaculty(student.Faculty);
     var deptValid = false;
-    if (facultyValid) {                                                          //if faculty is valid, check department's validity
+
+    //if faculty is valid, check department's validity
+    if (facultyValid) {                                                          
         deptValid = checkDepts(student.Department, student.Faculty);
     }
     var levelValid = checkLevel(student.Level);
@@ -27,8 +29,9 @@ var isValidStudent = function isValidStudent(student) {
         status.message = "Valid Student";
     }
     else {
-        //generate message relating to invalid data/property
         status.isValid = false;
+        
+        //return error message pertaining to invalid data entry
         if (!lastNameValid.isValid) {
             status.message = lastNameValid.message;
         }
@@ -51,8 +54,11 @@ var isValidStudent = function isValidStudent(student) {
         else if (!phoneNoValid.isValid) {
             status.message = phoneNoValid.message;
         }
-        else {
+        else if (!emailValid.isValid) {
             status.message = emailValid.message;
+        }
+        else {
+            status.message = 'User input error has occured';
         }
     }
     
@@ -248,7 +254,7 @@ var checkDob = function checkDob(day, month, year) {
                 status.message = "Selected month has only 31 days";
             }
 
-            //valid month
+            //valid month (executed after all checks has been passed)
             else {
                 status.isValid = true;
                 status.message = "Valid month";
@@ -281,18 +287,18 @@ var checkDob = function checkDob(day, month, year) {
 }
 
 
-//generate a new matric number for the student
-var newMatricNo = function newMatricNo(preMatricNo, allStudents) {
-    var matricNo = preMatricNo;
+//function to generate a new matric number for the student
+var newMatricNo = function newMatricNo(preMatricNo, matchingStudents) {
+    var matricNo = preMatricNo;                                         //set initial value of matriculation number
 
     var postMatricNo = 1;                                               //initial value of post-fix value of matric number
     
     //loop through all students in selected department and level
-    for (var i = 0; i < allStudents.length; i++) {
-        var existMatricNo = allStudents[i].MatricNo;
+    for (var i = 0; i < matchingStudents.length; i++) {
+        var existMatricNo = matchingStudents[i].MatricNo;
         
-        if (parseInt(existMatricNo.substr(5, 3)) >= postMatricNo) {          //compare last 3 digits of matric number
-            postMatricNo = parseInt(existMatricNo.substr(5, 3)) + 1;         //get Last matric number for dept and level and add 1
+        if (parseInt(existMatricNo.substr(5, 3)) >= postMatricNo) {     //compare last 3 digits of matric number to set value
+            postMatricNo = parseInt(existMatricNo.substr(5, 3)) + 1;    //get numeric part of last matric number for dept and level and add 1
         }
     }
     
@@ -311,7 +317,33 @@ var newMatricNo = function newMatricNo(preMatricNo, allStudents) {
 }
 
 
-//convert a string to pascal casing (with the first letter capitalized and other letters in lower case)
+//function to get the prefix of a department
+var deptPrefix = function deptPrefix(dept, fac) {
+    var departmentPrefix
+
+    //get department for selected faculty
+    for (var i = 0; i < Departments.length; i++) {
+        
+        if (Departments[i].Faculty == fac) {
+            
+            //check for department in department array under selected faculty
+            for (var j = 0; j < Departments[i].Depts.length; j++) {
+
+                if (Departments[i].Depts[j].Department == dept) {
+                    departmentPrefix = Departments[i].Depts[j].Prefix;          //get the department prefix
+                    break;
+                }
+            }
+            
+            break;
+        }
+    }
+    
+    return departmentPrefix; 
+}
+
+
+//function to convert a string to pascal casing (with the first letter capitalized and other letters in lower case)
 var pascalCase = function pascalCase(name){
     var modifiedName;
     modifiedName = name.substr(0, 1).toUpperCase();
@@ -320,7 +352,7 @@ var pascalCase = function pascalCase(name){
 }
 
 
-//to log errors to the console
+//function to log errors to the console
 var logError = function logError(err) {
     console.log('An error/exception has occured\n');
     console.log('Error Message: ' + err.message);
@@ -328,10 +360,12 @@ var logError = function logError(err) {
 }
 
 
+//export functions needed externally
 module.exports = {
     isValidStudent: isValidStudent,
+    ageRange: ageRange,
+    deptPrefix: deptPrefix,
     newMatricNo: newMatricNo,
     pascalCase: pascalCase,
-    ageRange: ageRange,
     logError: logError
 }

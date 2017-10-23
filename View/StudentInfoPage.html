@@ -1,5 +1,7 @@
 ﻿<!DOCTYPE html>
+
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -98,7 +100,7 @@
 
                             <div class=" col-xs-12 col-md-3">
                                 <div class="about-bg-wrapper">
-                                    <h1 class="count">215</h1>
+                                    <h1 class="count">1052</h1>
                                     <p>students</p>
                                 </div>
                             </div>
@@ -119,7 +121,7 @@
 
                             <div class="col-xs-12 col-md-3">
                                 <div class="about-bg-wrapper">
-                                    <h1 class="count">3151</h1>
+                                    <h1 class="count">14175</h1>
                                     <p>alumni</p>
                                 </div>
                             </div>
@@ -147,7 +149,7 @@
                 </div>
                 <br />
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 text-center">
                         <span id="spanAllStudents"></span>
                     </div>
                 </div>
@@ -426,7 +428,7 @@
                 </div>
 
                 <br />
-                <div class="text-center text-success fontMsg"><span id="msgEdit"></span></div>
+                <div class="text-center fontMsg"><span id="msgEdit"></span></div>
                 <br />
                 <br />
 
@@ -608,7 +610,7 @@
                     </div>
                 </div>
                 <br />
-                <div class="text-center text-success fontMsg"><span id="msgDel"></span></div>
+                <div class="text-center fontMsg"><span id="msgDel"></span></div>
                 <br />
                 <div id="delResult" class="container">
                     <div class="row">
@@ -675,7 +677,8 @@
             <!--about-->
             <div id="about" class="topPadding">
                 <div class="text-center heading">
-                    <h2>ABOUT</h2>
+                    <h2>ABOUT PROJECT</h2>
+                    <br />
                 </div>
                 <br />
                 <br />
@@ -695,12 +698,6 @@
                         <!--about wrapper right-->
                         <div class="col-xs-12 col-md-7">
                             <div class="about-right">
-                                <div class="heading">
-                                    <h2 class="text-center subHeader">
-                                        <br />
-                                        About Project<br />
-                                    </h2>
-                                </div>
 
                                 <div>
                                     <h3>Assumptions</h3>
@@ -711,6 +708,7 @@
                                             the department (which depends on the faculty) and level of the student.
                                         </li>
                                         <li>The system is to be used for only viewing, addition, modifcation and deletion of student information.</li>
+                                        <li>All faculties, departments and years of study are generically modelled.</li>
                                     </ul>
                                 </div>
 
@@ -721,16 +719,15 @@
                                             The data available is limited to only those which are accepted by the system and may not have all
                                             the content that could be found in a tertiary institution.
                                         </li>
-                                        <li>The system needs javascript enable on by the client to activate its functionality.</li>
-                                        <li>Angular framework was not used due to the relatively trivial nature of the system.</li>
+                                        <li>The system needs javascript enabled by the client/browser to activate its functionality.</li>
                                     </ul>
                                 </div>
 
                                 <div>
                                     <h3>Frameworks Used</h3>
                                     <ul class="list">
-                                        <li>MongoDb: To store student information, as well as other relevant data</li>
-                                        <li>Express: To act as a server which transmits content to the client. </li>
+                                        <li>MongoDb: To store student information, as well as other relevant data.</li>
+                                        <li>Express: To act as a server which transfers content to the client. </li>
                                         <li>JQuery: To perform DOM elements manipulation and enhance interactivity of the system.</li>
                                         <li>Node: To handle server side functionality </li>
                                     </ul>
@@ -739,12 +736,19 @@
                                 <div>
                                     <h3>Appreciation</h3>
                                     <ul class="list">
-                                        <li>Firstly, I would love to appreciate God almighty, for giving me the ability to learn as much as I needed
-                                        on all the technologies that were used in this project. </li>
-                                        <li>I am also very grateful to Andela, as well as Google, for enabling me to learn about a very impressive
-                                        technology and to understand its inner workings. It has also given me a greater appreciation of functional programming.</li>
-                                        <li>I hope to learn more about these frameworks and others if need be, so as to add value to my environment through
-                                        Technology. It has been a great privilege.</li>
+                                        <li>
+                                            Firstly, I would love to appreciate God almighty, for giving me the ability to learn
+                                            and apply all the different technologies that were used in this project.
+                                        </li>
+                                        <li>
+                                            I am also very grateful to Andela, as well as Google and Udacity, for enabling me to learn about a very impressive
+                                            technology and to understand the basics of its inner workings. It has also given me a greater appreciation
+                                            of functional programming.
+                                        </li>
+                                        <li>
+                                            I hope to learn more about these frameworks and others if need be, so as to add value to my environment through
+                                            Technology. It has been a great privilege.
+                                        </li>
                                     </ul>
                                 </div>
 
@@ -770,7 +774,7 @@
                             </div>
                             <div class="text-info">
                                 <p>
-                                    To explore strange new worlds to seek out new life and new civilizations to boldly go where no man has gone before.
+                                    To explore strange new worlds to seek out new experiences. Boldly going where no man has gone before to acquire knowledge.
                                     It is time to invest in yourself.
                                 </p>
                                 <p>This is the school for you. We train the best students.</p>
@@ -833,6 +837,7 @@
         <script src="/View/Scripts/CommonScripts/bootstrap.min.js"></script>
         <script src="/View/Scripts/CommonScripts/animate.js"></script>
         <script src="/View/Scripts/StudentInfoFunctions/DataAccess/DataApi.js"></script>
+        <script src="/View/Scripts/StudentInfoFunctions/DataAccess/CallBackDispatcher.js"></script>
         <script src="/View/Scripts/StudentInfoFunctions/General/GeneralFunctions.js"></script>
         <script src="/View/Scripts/StudentInfoFunctions/General/ControlManipulationFunctions.js"></script>
         <script src="/View/Scripts/StudentInfoFunctions/Sections/HomeFunctions.js"></script>
@@ -848,4 +853,5 @@
     </div>
 
 </body>
+
 </html>

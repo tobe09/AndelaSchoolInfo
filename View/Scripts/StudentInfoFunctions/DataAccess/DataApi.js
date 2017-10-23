@@ -1,89 +1,91 @@
 ﻿//function which returns all students information in the database
-function getAllStudents() {
-    var allStudents;
+function getAllStudents(callBackMethodName) {
     
     $.ajax({
         type: "GET",
         url: "/Students",
-        async: false,
         success: function (students) {
-            allStudents = students;
+            callBackDispatcher(callBackMethodName, students);
+        },
+        error: function () {
+            callBackDispatcher(callBackMethodName);
         }
     })
     
-    return allStudents;
 }
 
 
 //function which returns a single student information from the database
-function getOneStudent(query) {
-    var student;
+function getOneStudent(query, callBackMethodName) {
     
     $.ajax({
         type: "GET",
         url: "/Students/" + query,
-        async: false,
-        success: function (studnt) {
-            student = studnt;
+        success: function (student) {
+            callBackDispatcher(callBackMethodName, student);
+        },
+        error: function () {
+            callBackDispatcher(callBackMethodName);
         }
     })
     
-    return student;
 }
 
 
 //function to add a student to database
-function addStudent(studentInfo){
-    var student;
+function addStudent(studentInfo, callBackMethodName){
 
     $.ajax({
         type: "POST",
         url: "/Students",
         data: studentInfo,
-        async: false,
-        success: function (studnt) {
-            student = studnt;
+        success: function (addedStudent) {
+            callBackDispatcher(callBackMethodName, addedStudent);
+        },
+        error: function () {
+            callBackDispatcher(callBackMethodName);
         }
     })
 
-    return student;
 }
 
 
 //function to modify a student in the database
-function modifyStudent(query, modifiedStudentInfo){
-    var student;
+function modifyStudent(query, modifiedStudentInfo, callBackMethodName){
     
     $.ajax({
         type: "PUT",
         url: "Students/" + query,
         data: modifiedStudentInfo,
-        async: false,
-        success: function (studnt) {
-            student = studnt;
+        success: function (modifiedStudent) {
+            callBackDispatcher(callBackMethodName, modifiedStudent);
+        },
+        error: function () {
+            callBackDispatcher(callBackMethodName);
         }
     })
 
-    return student
 }
 
 
 //function to delete a student from the database
-function deleteStudent(query) {
-    var student;
+function deleteStudent(query, callBackMethodName) {
     
     $.ajax({
         type: "DELETE",
         url: "Students/" + query,
-        async: false,
-        success: function (studnt) {
-            student = studnt;
+        success: function (deletedStudent) {
+            callBackDispatcher(callBackMethodName, deletedStudent);
+        },
+        error: function () {
+            callBackDispatcher(callBackMethodName);
         }
     })
 
-    return student
 }
 
+
+//Functions that query existing objects in the web server (since the database is not queried, asynchrony is not a necessity)
 
 //function to get all departments
 function getDept() {
@@ -134,3 +136,7 @@ function getAgeRange(){
 
     return ageRange;
 }
+
+
+
+

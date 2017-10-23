@@ -1,5 +1,5 @@
-﻿//client side error message
-var errMsg = 'User Input error has occured';
+﻿//ajax call error message
+var ajaxErrMsg = 'Error communicating with server';
 
 
 //called to display only home page when page is initially loaded
@@ -8,15 +8,15 @@ window.onload = pageLoad();
 
 //displays only the home page
 function pageLoad() {
-    clearValues()
+    clearValues();
     hideAll();
     makeVisible('#home')
 }
 
 
-//hides all divs
+//hides all divs/sections
 function hideAll() {
-    makeInvisible('#home')
+    makeInvisible('#home');
     makeInvisible('#allStudents');
     makeInvisible('#oneStudent');
     makeInvisible('#addStudent');
@@ -28,31 +28,31 @@ function hideAll() {
 
 //function to clear all neccesary values
 function clearValues() {
-    message('#msgOne', '');
-    message('#msgAdd', '');
-    message('#msgEdit', '');
-    message('#msgDel', '');
+    message('#msgOne', '');             //message label for single student section
+    message('#msgAdd', '');             //message label add single student section
+    message('#msgEdit', '');           //message label for edit student section
+    message('#msgDel', '');            //message label for delete student section
 }
 
 
-//function to show a tag/control
+//function to enable visibility for a tag/control
 function makeVisible(controlId) {
     $(controlId).css("display", "block");
     $(controlId).css("visibility", "visible");
 }
 
 
-//function to hide a tag/control
+//function to disable visibility for a tag/control
 function makeInvisible(controlId) {
     $(controlId).css("display", "none");
     $(controlId).css("visibility", "hidden");
 }
 
 
-//function to display page messages
+//function to display page messages on a span/label
 function message(control, msg, color) {
-    $(control).text(msg);
-    $(control).css("color", color);
+    $(control).text(msg);                   //display the message
+    $(control).css("color", color);         //set the label color
 }
 
 
@@ -67,15 +67,17 @@ function validSearchText(query) {
 }
 
 
-//function to convert a mongo db date to a formatted string
+//function to convert a mongo db date to a formatted date string
 function formatDate(stringDate) {
     var formattedDate;
     
     var newDate = new Date(stringDate);
     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    formattedDate = days[newDate.getDay()];                                    //name of day of the week
-    var suffix = dateSuffix(newDate.getDate());
+
+    var suffix = dateSuffix(newDate.getDate());                                    //generate date suffix
+
+    formattedDate = days[newDate.getDay()];                                        //name of day of the week
     formattedDate += ', ' + newDate.getDate() + suffix;                            //day of the month
     formattedDate += ' ' + months[newDate.getMonth()];                             //name of month of the year
     formattedDate += ', ' + newDate.getFullYear();                                 //numerical year
@@ -84,14 +86,23 @@ function formatDate(stringDate) {
 }
 
 
-//helper function to get the suffix for a date
+//helper function to get the suffix for a date of the month
 function dateSuffix(date) {
     var suffix;
     
-    if (date % 10 == 1 && date != 11) { suffix = 'st'; }
-    else if (date % 10 == 2 && date != 12) { suffix = 'nd'; }
-    else if (date % 10 == 3 && date != 13) { suffix = 'rd'; }
-    else { suffix = 'th'; }
+    //set suffix according to date of the month
+    if (date % 10 == 1 && date != 11) {
+        suffix = 'st';
+    }
+    else if (date % 10 == 2 && date != 12) {
+        suffix = 'nd';
+    }
+    else if (date % 10 == 3 && date != 13) {
+        suffix = 'rd';
+    }
+    else {
+        suffix = 'th';
+    }
     
     return suffix;
 }
@@ -100,8 +111,10 @@ function dateSuffix(date) {
 //function to get date and convert to array integer values
 function getDateArray(stringdate) {
     var dateArray = [];
-
+    
+    //convert the date string representation to a date object
     var newDate = new Date(stringdate);
+
     dateArray.push(newDate.getDate());                                  //day
     dateArray.push(newDate.getMonth() + 1);                             //month
     dateArray.push(newDate.getFullYear());                              //year
@@ -114,16 +127,19 @@ function getDateArray(stringdate) {
 function maxDays(monthVal, yearVal) {
     var maxDay;
     
-    //check february and leap years
+    //check february for non-leap years
     if (monthVal == 2 && (yearVal % 4 != 0 || (yearVal % 100 == 0 && yearVal % 400 != 0))) {
         maxDay = 28;
     }
+    //check february for leap years
     else if (monthVal == 2 && (yearVal % 4 == 0 && (yearVal % 100 != 0 || yearVal % 400 == 0))) {
         maxDay = 29;
     }
+    //check for 30-day months
     else if (monthVal == 4 || monthVal == 6 || monthVal == 9 || monthVal == 11) {
         maxDay = 30;
     }
+    //other months with 31 days
     else {
         maxDay = 31;
     }
@@ -135,7 +151,8 @@ function maxDays(monthVal, yearVal) {
 //convert array of table objects to an array of strings using selected property
 function toPropertyArray(objArray, property) {
     var stringArray = [];
-
+    
+    //set proper
     for (var i = 0; i < objArray.length; i++) {
         stringArray.push(objArray[i][property]);
     }
@@ -168,17 +185,21 @@ function toDeptArray(allDepts, fac) {
 
 
 //generate a select list using array, for its text and values for its values and giving it an id
-function generateSelectList(id, texts, values) {
+function generateSelectList(plainListId, texts, values) {
     var selectList;
     
+    //to set values as text if no corresponding value array is supplied
     if (values == null) {
         values = texts;
     }
     
-    selectList = "<select id='" + id + "' class='dropdown addDropdown dropdown-header textDark'>";
+    selectList = "<select id='" + plainListId + "' class='dropdown addDropdown dropdown-header textDark'>";
+
+    //generate options for each item
     for (var i = 0; i < texts.length; i++) {
         selectList += "<option value='" + values[i] + "'>" + texts[i] + "</option>";
     }
+
     selectList += "</select>";
     
     return selectList;

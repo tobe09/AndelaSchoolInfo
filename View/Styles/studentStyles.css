@@ -201,8 +201,6 @@ label{
 }
 
 .top-right p:before {
-	content: "\f041";
-	font-family: 'FontAwesome';
 	font-size: 16px;
 	color: #01b1d7;
 	margin-right: 10px;
@@ -413,8 +411,6 @@ ul {
 }
 
 .top-right p:before {
-	content: "\f041";
-	font-family: 'FontAwesome';
 	font-size: 16px;
 	color: #01b1d7;
 	margin-right: 10px;
@@ -660,7 +656,7 @@ ul {
 }
 
 #about h3{
-    color: #87dede;
+    color: #8695b5;
 }
 
 #about .subHeader{    
@@ -679,7 +675,7 @@ ul {
 	content: "";
     border: 8px solid #e5eef0;
 	width: 105%;
-    height: 120%;
+    height: 103%;
     position: absolute;
     right: -4%;
     top: -1%;
@@ -688,12 +684,13 @@ ul {
 
 /*About bg*/
 #about-bg {
-	position: relative;
-	background-image: url(/View/Images/about/about2.jpg);
+    position: relative;
+    background-image: url(/View/Images/about/about2.jpg);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     text-transform: uppercase;
+    text-align: center;
     color: #fff;
 }
 
@@ -757,8 +754,6 @@ ul {
 }
 
 #footer .footer-heading ul > li > a:before {
-	content: "\f10c";
-	font-family: 'FontAwesome';
 	padding-right: 10px;
 }
 
