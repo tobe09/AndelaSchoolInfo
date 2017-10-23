@@ -95,7 +95,7 @@ localEntry(collectionName);
 newFaculty = new facultyModel(newFaculty);
 newFaculty.save(facultyEntry(collectionName, newFaculty));
 
-var newFaculty = { Faculty: 'Veterianary Medicine' };
+var newFaculty = { Faculty: 'Veterinary Medicine' };
 Faculties.push(newFaculty);
 localEntry(collectionName);
 newFaculty = new facultyModel(newFaculty);

@@ -208,7 +208,7 @@ newDepartment = new departmentModel(newDepartment);
 newDepartment.save(departmentEntry(collectionName, newDepartment));
 
 var newDepartment = {
-    Faculty: 'Veterianary Medicine',
+    Faculty: 'Veterinary Medicine',
     Depts: [{ Department: 'Pathology', Years: 5, Prefix: 'PAH' },
         { Department: 'Veterinary Anatomy', Years: 5, Prefix: 'VEA' },
         { Department: 'Veterinary Medicine', Years: 5, Prefix: 'VEM' },
