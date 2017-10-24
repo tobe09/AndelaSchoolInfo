@@ -303,6 +303,9 @@ router.route("/Students/:Id")
             logError(err);
             response = { Error: errorMsg };
         }
+        else if (deletedStudent == null) { 
+            response={Error: 'No student exists with submitted Id'}
+        }
         else {
             response = deletedStudent;
         }
