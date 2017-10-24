@@ -213,16 +213,16 @@ var checkDob = function checkDob(day, month, year) {
     var year = parseInt(year);
     
     //check validity of individual entries
-    if (!isNaN(day) && !isNaN(month) && !isNaN(year) && (day > 0 && day <= 31) && (month > 0 && month <= 12) && (year > 1900 && year < new Date().getFullYear())) {
+    if (!isNaN(day) && !isNaN(month) && !isNaN(year) && (day > 0) && (month > 0 && month <= 12) && (year < new Date().getFullYear())) {
         
         //get milliseconds gap between birth date and today's date and convert to years
         var age = new Date() - new Date(year, month - 1, day);
         age = age / (1000 * 60 * 60 * 24 * 365.2425);
         
         //to account for student age with respect to the present
-        if (age < ageRange.minAge || age >ageRange.maxAge) {
+        if (age < ageRange.minAge || age > ageRange.maxAge) {
             
-            if (age < minAge) {
+            if (age < ageRange.minAge) {
                 status.message = "Student is too young (Age: " + parseInt(age) + "). Student should be between 16 and 70 years of age";
             }
             else {
@@ -250,7 +250,7 @@ var checkDob = function checkDob(day, month, year) {
             }
 
             //to account for other months
-            else if ((month == 1 || month == 3 || month == 5 || month == 6 || month == 7 || month == 8 || month == 10) && day > 31) {
+            else if ((month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) && day > 31) {
                 status.message = "Selected month has only 31 days";
             }
 
@@ -267,19 +267,19 @@ var checkDob = function checkDob(day, month, year) {
             status.message = 'Please enter a number for day of birth';
         }
         else if (day <= 0 || day > 31) {
-            status.message = 'Please enter a valid day of birth';
+            status.message = 'Please enter a valid day of birth (day of birth cannot be negative)';
         }
         else if (isNaN(month)) {
             status.message = 'Please enter a number for month of birth';
         }
         else if (month <= 0 || month > 12) {
-            status.message = 'Please enter a valid month of birth';
+            status.message = 'Please enter a valid month of birth (i.e. between 1 to 12 inclusive)';
         }
         else if (isNaN(year)) {
             status.message = 'Please enter a number for year of birth';
         }
         else {
-            status.message = 'Please enter a valid year of birth';
+            status.message = 'Please enter a valid year of birth (i.e. cannot be greater than current year)';
         }
     }
     

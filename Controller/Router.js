@@ -21,12 +21,17 @@ var logError = Validation.logError;                             //used to log er
 var deptPrefix = Validation.deptPrefix;                         //used to get a department's prefix
 
 
+//to validate objectId
+var checkObjectId = require('mongoose').Types.ObjectId;
+
+
 //to locate application files (relative to application root)
 var path = require('path');
 var rootLocation = path.join(__dirname, '../');
 
 
 var errorMsg = 'Server-side error has occured';                          //to signify a server side error
+
 
 
 //get web page
@@ -36,6 +41,7 @@ router.get('/', function (req, res) {
 router.get('/StudentPage', function (req, res) {
     res.sendFile('/View/StudentInfoPage.html', { root: rootLocation });
 });
+
 
 
 //get database tables
@@ -65,6 +71,7 @@ router.get("/dbTables/:tableName", function (req, res) {
     
     res.json(table);
 });
+
 
 
 router.route("/Students")
@@ -150,15 +157,14 @@ router.route("/Students")
 });
 
 
+
 router.route("/Students/:Id")
 
-//get specific student based on id, matric no, first name or last name
+//get specific student based on unique id or matriculation number
 .get(function (req, res) {
     var studentQuery = req.params.Id;
-    
-    //to validate objectId
-    var checkObjectId = require('mongoose').Types.ObjectId;
-    var isValidObjectId = checkObjectId.isValid(studentQuery);
+
+    var isValidObjectId = checkObjectId.isValid(studentQuery);     //validate objectId
     
     if (isValidObjectId) {                                        //check if the string is a GUID
         Students.find({ _id: studentQuery }, sendResult);
@@ -176,7 +182,7 @@ router.route("/Students/:Id")
                 response = { Error: errorMsg };
             }
             else {
-                response = { Error: 'No such student found' };
+                response = { Error: 'No such student found in the database' };
             }
         }
         //return student
@@ -190,86 +196,99 @@ router.route("/Students/:Id")
 
 //update student information (technically, the "put" verb is safe and idempotent, as opposed to post)
 .put(function (req, res) {
-    var studentId = req.params.Id;
+    var studentId = req.params.Id;                                    //updated student id
+    var updatedStudent = req.body;                                   //updated student information
     
-    Students.findById(studentId, function (err, student) {
+    var isValidObjectId = checkObjectId.isValid(studentId);         //validate studentId as objectId
+    var isValidStudnt = isValidStudent(updatedStudent)//check validity of student information
+    
+    if (isValidObjectId && isValidStudnt.isValid) {
         
-        if (err) {
-            logError(err);                                                          //to handle errors/exceptions
-            res.json({ Error: errorMsg });
-        }
-        else {
-            var updatedStudent = req.body;
+        Students.findById(studentId, function (err, student) {
             
-            //check validity of student information
-            var isValidStudnt = isValidStudent(updatedStudent)
-            
-            if (isValidStudnt.isValid) {
-                student.LastName = pascalCase(updatedStudent.LastName);
-                student.FirstName = pascalCase(updatedStudent.FirstName);
-                student.MiddleName = pascalCase(updatedStudent.MiddleName);
-                student.Faculty = updatedStudent.Faculty;
-                student.DateOfBirth = new Date(updatedStudent.Year, updatedStudent.Month - 1, updatedStudent.Day);
-                student.PhoneNo = updatedStudent.PhoneNo;
-                student.Email = updatedStudent.Email;
+            if (err) {
+                logError(err);                                                          //to handle errors/exceptions
+                res.json({ Error: errorMsg });
+            }
+            else {
                 
-                //check for changes in department or level
-                if (student.Department != updatedStudent.Department || student.Level != updatedStudent.Level) {
+                if (student != null) {                      //sttudent found
+                    student.LastName = pascalCase(updatedStudent.LastName);
+                    student.FirstName = pascalCase(updatedStudent.FirstName);
+                    student.MiddleName = pascalCase(updatedStudent.MiddleName);
+                    student.Faculty = updatedStudent.Faculty;
+                    student.DateOfBirth = new Date(updatedStudent.Year, updatedStudent.Month - 1, updatedStudent.Day);
+                    student.PhoneNo = updatedStudent.PhoneNo;
+                    student.Email = updatedStudent.Email;
                     
-                    //start value of student matriculation number
-                    var preMatricNo = "^" + deptPrefix(updatedStudent.Department, updatedStudent.Faculty) + (updatedStudent.Level / 100);    
-
-                    //get all students in the same category and generate unique matric number
-                    Students.find({ MatricNo: { $regex: preMatricNo } },function (err, matchingStudents) {
+                    //check for changes in department or level
+                    if (student.Department != updatedStudent.Department || student.Level != updatedStudent.Level) {
                         
-                        if (err) {
-                            logError(err);
-                            res.json({ "Error": errorMsg });
-                        }
-                        else {
-                            preMatricNo = preMatricNo.substr(1, 4);                                 //to remove leading '^' sign
-                            var matricNo = newMatricNo(preMatricNo, matchingStudents);
+                        //start value of student matriculation number
+                        var preMatricNo = "^" + deptPrefix(updatedStudent.Department, updatedStudent.Faculty) + (updatedStudent.Level / 100);
+                        
+                        //get all students in the same category and generate unique matric number
+                        Students.find({ MatricNo: { $regex: preMatricNo } }, function (err, matchingStudents) {
                             
-                            //update student information
-                            student.Department = updatedStudent.Department;
-                            student.Level = updatedStudent.Level;
-                            student.MatricNo = matricNo;
-                            
-                            saveUpdatedStudent(student);
-                        }
-                    })
-                }
-                //no change to department and level
-                else {
-                    saveUpdatedStudent(student);
-                }
-                
-                //save updated student
-                function saveUpdatedStudent(studnt) {
-                    studnt.save(function (err, updatedStudnt) {
-                        if (err) {
-                            //already existing email error
-                            if (typeof (err.errors.Email) == 'object') {
-                                res.json({ "Error": 'Email address already exists' });
+                            if (err) {
+                                logError(err);
+                                res.json({ Error: errorMsg });
                             }
                             else {
-                                logError(err);
-                                res.json({ "Error": errorMsg });
+                                preMatricNo = preMatricNo.substr(1, 4);                                 //to remove leading '^' sign
+                                var matricNo = newMatricNo(preMatricNo, matchingStudents);
+                                
+                                //update student information
+                                student.Department = updatedStudent.Department;
+                                student.Level = updatedStudent.Level;
+                                student.MatricNo = matricNo;
+                                
+                                saveUpdatedStudent(student);
                             }
-                        }
-                        else {
-                            res.json(updatedStudnt);                            //return updated student
-                        }
-                    })
+                        })
+                    }
+                    //no change to department and level
+                    else {
+                        saveUpdatedStudent(student);
+                    }
+                    
+                    //save updated student
+                    function saveUpdatedStudent(studnt) {
+                        studnt.save(function (err, updatedStudnt) {
+                            if (err) {
+                                //already existing email error
+                                if (typeof (err.errors.Email) == 'object') {
+                                    res.json({ Error: 'Email address already exists' });
+                                }
+                                else {
+                                    logError(err);
+                                    res.json({ Error: errorMsg });
+                                }
+                            }
+                            else {
+                                res.json(updatedStudnt);                            //return updated student
+                            }
+                        })
+                    }
                 }
-            } 
 
-            //erroneous data entry
-            else {
-                res.json({ "Error": isValidStudnt.message });
+                //student with Id not found
+                else {
+                    res.json({ Error: 'No student exists with submitted Id' });
+                }
             }
+        })                                      //end of Student.findById... section
+    } 
+
+    //erroneous data entry
+    else {
+        if (!isValidObjectId) {
+            res.json({ Error: 'Student Id submitted is not in the form of a valid object Id' });
         }
-    })
+        else {
+            res.json({ Error: isValidStudnt.message });
+        }
+    }
 })
 
 //delete student information
@@ -291,6 +310,7 @@ router.route("/Students/:Id")
         res.json(response);
     })
 });
+
 
 
 //to send other files/data to the database
