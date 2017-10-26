@@ -85,9 +85,12 @@ function editStudentLinkClick() {
     makeInvisible("#editForm");
     makeInvisible("#editResult");
     
-    acceptedYears('dobYearEdit', '#dobYearSpanEdit');
-    getMonths('dobMonthEdit', '#dobMonthSpanEdit');
-    getDays('dobDayEdit', '#dobDaySpanEdit');
+    //check if year of birth list has been generated before populating
+    if ($('#dobYearSpanEdit').text() == "") {
+        acceptedYears('dobYearEdit', '#dobYearSpanEdit');
+        getMonths('dobMonthEdit', '#dobMonthSpanEdit');
+        getDays('dobDayEdit', '#dobDaySpanEdit');
+    }
 }
 
 //callback function to display student details to be modified
@@ -105,15 +108,18 @@ function editStudentShowCallBack(result) {
         $('#fNameEdit').val(result.FirstName);
         $('#mNameEdit').val(result.MiddleName);
         
-        populateSelectFac('#facEdit', 'facListEdit');                           //generate faculties list from collection
-        $('#facListEdit').val(result.Faculty);
-        var fac = $('#facListEdit').val()//get faculty value
-        populateSelectDept(fac, '#deptEdit', 'deptListEdit');                   //generate departments list from faculty
+        //repopulate faculty select list from server if it has not been generated
+        if ($('#facEdit').text() == "") {
+            populateSelectFac('#facEdit', 'facListEdit');                         //generate faculties list from collection
+        }
+        
+        $('#facListEdit').val(result.Faculty);                                   //set list to student's faculty
+        populateSelectDept(result.Faculty, '#deptEdit', 'deptListEdit');                 //generate departments list from faculty
         $("#deptListEdit option").filter(function () {                          //set department select text option
             return this.text == result.Department;
         }).prop('selected', true);
-        var years = $('#deptListEdit').val()//get year value of selected department
-        populateSelectLevel(years, '#levelEdit', 'levelListEdit');              //generate levels select list from department years      
+        var years = $('#deptListEdit').val()                                    //get year value of selected department
+        populateSelectLevel(years, '#levelEdit', 'levelListEdit');              //generate levels select list from department years   
         $('#levelListEdit').val(result.Level);
         
         //get date of birth values

@@ -81,15 +81,21 @@ function addStudentLinkClick() {
     makeVisible("#divFormAdd");
     makeInvisible("#divResultAdd");
     
-    populateSelectFac('#facAdd', 'facListAdd');
-    var fac = $('#facListAdd').val();
-    populateSelectDept(fac, '#deptAdd', 'deptListAdd');
-    var years = $('#deptListAdd').val();
-    populateSelectLevel(years, '#levelAdd', 'levelListAdd');
+    //check if select dropdown list has been populated
+    if ($('#facAdd').text() == "") {
+        populateSelectFac('#facAdd', 'facListAdd');
+        var fac = $('#facListAdd').val();
+        populateSelectDept(fac, '#deptAdd', 'deptListAdd');
+        var years = $('#deptListAdd').val();
+        populateSelectLevel(years, '#levelAdd', 'levelListAdd');
+    }
     
-    acceptedYears('dobYearAdd', '#dobYearSpanAdd');                             //get select list with all expected birth years of student
-    getMonths('dobMonthAdd', '#dobMonthSpanAdd');                               //get select list with all the months in a year
-    getDays('dobDayAdd', '#dobDaySpanAdd');                                     //get select list with all the days in a month
+    //check if date of birth select list has been populated
+    if ($('#dobYearSpanAdd').text() == "") {
+        acceptedYears('dobYearAdd', '#dobYearSpanAdd');                             //get select list with all expected birth years of student
+        getMonths('dobMonthAdd', '#dobMonthSpanAdd');                               //get select list with all the months in a year
+        getDays('dobDayAdd', '#dobDaySpanAdd');                                     //get select list with all the days in a month
+    }
 }
 
 
@@ -121,9 +127,6 @@ function addStudentCallBack(result) {
         $('#lNameAdd').val('');
         $('#fNameAdd').val('');
         $('#mNameAdd').val('');
-        $('#dobDayAdd').val('');
-        $('#dobMonthAdd').val('');
-        $('#dobYearAdd').val('');
         $('#phoneNoAdd').val('');
         $('#emailAdd').val('');
     }

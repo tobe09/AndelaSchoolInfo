@@ -1,5 +1,5 @@
 ﻿//ajax call error message
-var ajaxErrMsg = 'Error communicating with server';
+var ajaxErrMsg = 'Error Communicating With Server';
 
 
 //called to display only home page when page is initially loaded

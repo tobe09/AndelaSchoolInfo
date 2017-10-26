@@ -32,9 +32,10 @@ function allStudentsInfoCallBack(students) {
 
         //students exist in the database
         if (students.length > 0) {
+            message('#spanAllStudents', '', 'black');                   //reset to default text color
             
             var output = '<table id="allTable" class="table table-striped table-responsive text-center">';
-            output += '<thead> <tr> <th class="text-center">S/N</th> <th class="text-center largeFont">Students Information</th> </tr> </thead> <tbody>';
+            output += '<thead> <tr> <th class="text-center">S/N</th> <th class="text-center largeFont">Students\' Information</th> </tr> </thead> <tbody>';
             
             for (var i = 0; i < students.length; i++) {
                 output += '<tr>  <td class="largeFont">' + (i + 1) + '</td>';

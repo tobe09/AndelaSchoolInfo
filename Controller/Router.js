@@ -30,7 +30,7 @@ var path = require('path');
 var rootLocation = path.join(__dirname, '../');
 
 
-var errorMsg = 'Server-side error has occured';                          //to signify a server side error
+var errorMsg = 'Error Communicating With Database';                          //to signify a server side error
 
 
 
