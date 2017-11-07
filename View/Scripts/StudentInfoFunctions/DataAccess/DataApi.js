@@ -87,7 +87,24 @@ function deleteStudent(query, callBackMethodName) {
 
 //Functions that query existing objects in the web server (since the database is not queried, asynchrony is not a necessity)
 
-//function to get all departments
+//function to get all faculties  (asynchronously called)
+function getFac(callBackMethodName) {
+    var allFaculties;
+    
+    $.ajax({
+        type: "GET",
+        url: "dbTables/faculties",
+        success: function (allFacs) {
+            callBackDispatcher(callBackMethodName, allFacs);
+        },
+        error: function (){
+            callBackDispatcher(callBackMethodName);
+        }
+    });                                          
+};
+
+
+//function to get all departments (synchronously called)
 function getDept() {
     var allDepartments
     
@@ -104,24 +121,7 @@ function getDept() {
 }
 
 
-//function to get all faculties
-function getFac() {
-    var allFaculties;
-    
-    $.ajax({
-        type: "GET",
-        url: "dbTables/faculties",
-        async: false,
-        success: function (allFacs) {
-            allFaculties = allFacs;                             //an array of all faculties
-        }
-    });
-    
-    return allFaculties;                                        //return all faculties          
-};
-
-
-//function to get acceptable age range
+//function to get acceptable age range (synchronously called)
 function getAgeRange(){
     var ageRange;
 

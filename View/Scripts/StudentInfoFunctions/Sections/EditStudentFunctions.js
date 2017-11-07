@@ -93,6 +93,7 @@ function editStudentLinkClick() {
     }
 }
 
+var studentResult;      //to be used for faculty, department and level callback function
 //callback function to display student details to be modified
 function editStudentShowCallBack(result) {
     
@@ -108,19 +109,8 @@ function editStudentShowCallBack(result) {
         $('#fNameEdit').val(result.FirstName);
         $('#mNameEdit').val(result.MiddleName);
         
-        //repopulate faculty select list from server if it has not been generated
-        if ($('#facEdit').text() == "") {
-            populateSelectFac('#facEdit', 'facListEdit');                         //generate faculties list from collection
-        }
-        
-        $('#facListEdit').val(result.Faculty);                                   //set list to student's faculty
-        populateSelectDept(result.Faculty, '#deptEdit', 'deptListEdit');                 //generate departments list from faculty
-        $("#deptListEdit option").filter(function () {                          //set department select text option
-            return this.text == result.Department;
-        }).prop('selected', true);
-        var years = $('#deptListEdit').val()                                    //get year value of selected department
-        populateSelectLevel(years, '#levelEdit', 'levelListEdit');              //generate levels select list from department years   
-        $('#levelListEdit').val(result.Level);
+        getFac('facDeptLevelEditCallBack');
+        studentResult = result;             //'studentResult' variable is used for the callback method
         
         //get date of birth values
         var dob = getDateArray(result.DateOfBirth);
@@ -132,7 +122,7 @@ function editStudentShowCallBack(result) {
         $('#emailEdit').val(result.Email);
         message('#msgEdit', "Make Required modifications", "brown");
     }
-            //error condition
+    //error condition
     else {
         makeInvisible("#editForm");
         makeInvisible('#editResult');
@@ -143,6 +133,30 @@ function editStudentShowCallBack(result) {
         else {
             message('#msgEdit', result.Error, "red");
         }
+    }
+}
+
+//callback function to populate faculties, departments and levels
+function facDeptLevelEditCallBack(allFaculties){
+
+    if (allFaculties != null) {       //no error from asynchronous call
+        //repopulate faculty select list from server if it has not been generated
+        if ($('#facEdit').text() == "") {
+            populateSelectFac('#facEdit', 'facListEdit', allFaculties);                 //generate faculties list from collection
+        }
+        
+        $('#facListEdit').val(studentResult.Faculty);                                   //set list to student's faculty
+        populateSelectDept(studentResult.Faculty, '#deptEdit', 'deptListEdit');         //generate departments list from faculty
+        $("#deptListEdit option").filter(function () {                          //set department select text option
+            return this.text == studentResult.Department;
+        }).prop('selected', true);
+        var years = $('#deptListEdit').val()                                    //get year value of selected department
+        populateSelectLevel(years, '#levelEdit', 'levelListEdit');              //generate levels select list from department years   
+        $('#levelListEdit').val(studentResult.Level);
+    }
+
+    else {
+        message('#msgEdit', ajaxErrMsg, "red");
     }
 }
 

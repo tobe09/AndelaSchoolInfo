@@ -22,8 +22,8 @@ var Departments = [];
 
 //CREATE OR UPDATE (UPSERT) CONTENT IN DATABASE AND LOCAL COLLECTION
 var Entry = require('./Scripts/showDbEntry.js');
-var departmentEntry = Entry.dbEntry
-var localEntry = Entry.localEntry;
+var departmentEntry = Entry.dbEntry     //function to display message for db storage entry
+var localEntry = Entry.localEntry;       //function to display message for local collection storage entry
 
 
 var newDepartment = {

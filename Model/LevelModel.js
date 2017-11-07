@@ -19,8 +19,8 @@ var Levels = [];
 
 //CREATE OR UPDATE (UPSERT) CONTENT IN DATABASE AND LOCAL COLLECTION
 var Entry = require('./Scripts/showDbEntry.js');
-var levelEntry = Entry.dbEntry;
-var localEntry = Entry.localEntry;
+var levelEntry = Entry.dbEntry;                       //function to display message for db storage entry
+var localEntry = Entry.localEntry;                   //function to display message for local collection storage entry
 
 var newLevel = { Level: 100 };
 Levels.push(newLevel);

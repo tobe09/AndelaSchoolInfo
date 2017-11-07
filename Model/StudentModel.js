@@ -32,7 +32,7 @@ var studentModel = mongoose.model(collectionName, studentSchema);
 
 //get function to display data entry
 var Entry = require('./Scripts/showDbEntry.js');
-var studentEntry = Entry.dbEntry
+var studentEntry = Entry.dbEntry            //function to display message for db storage entry
 
 
 var newStudent = new studentModel({
@@ -46,7 +46,7 @@ var newStudent = new studentModel({
     DateOfBirth: new Date(1993, 9 - 1, 6),
     PhoneNo: '+2348136831102',
     Email: 'chineketobenna@gmail.com',
-    DateReg: Date.now()
+    DateReg: Date.now()                     //to ensure that the registration date does not change
 });
 newStudent.save(studentEntry('\n' + collectionName, newStudent));
 
@@ -56,7 +56,7 @@ newStudent = new studentModel({
     MiddleName: '',
     MatricNo: 'HST4001',
     Faculty: 'Arts',
-    Department: 'HISTORY',
+    Department: 'History',
     Level: '400',
     DateOfBirth: new Date(1996, 1 - 1, 19),
     PhoneNo: '08044444444',

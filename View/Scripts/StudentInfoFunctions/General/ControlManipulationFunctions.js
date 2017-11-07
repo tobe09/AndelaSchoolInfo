@@ -63,8 +63,8 @@ function getMonths(plainMonthListId, spanId) {
 
 
 //generate a select list with all faculties
-function populateSelectFac(facSpanId, plainFacListId) {
-    var faculties = getFac();
+function populateSelectFac(facSpanId, plainFacListId, allFaculties) {
+    var faculties = allFaculties;
     faculties = toPropertyArray(faculties, 'Faculty');                      //returns formatted array with strings contained in the property, 'Faculty'
     var facSelectList = generateSelectList(plainFacListId, faculties);      //generate the select list
     $(facSpanId).html(facSelectList);                                       //append as html
