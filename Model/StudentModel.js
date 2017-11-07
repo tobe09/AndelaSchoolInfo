@@ -60,7 +60,7 @@ newStudent = new studentModel({
     Level: '400',
     DateOfBirth: new Date(1996, 1 - 1, 19),
     PhoneNo: '08044444444',
-    Email: 'mail2@gmail.com',
+    Email: 'olumuyiwaadeniran@gmail.com',
     DateReg: Date.now()
 });
 newStudent.save(studentEntry(collectionName, newStudent));
@@ -75,7 +75,7 @@ newStudent = new studentModel({
     Level: '100',
     DateOfBirth: new Date(1998, 6 - 1, 24),
     PhoneNo: '09011111111',
-    Email: 'mail2@gmail.com',
+    Email: 'azeezsakamail2@gmail.com',
     DateReg: Date.now()
 });
 newStudent.save(studentEntry(collectionName, newStudent));
