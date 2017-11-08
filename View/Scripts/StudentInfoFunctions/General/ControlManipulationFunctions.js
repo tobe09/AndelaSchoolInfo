@@ -72,8 +72,8 @@ function populateSelectFac(facSpanId, plainFacListId, allFaculties) {
 
 
 //generate a select list with all departments
-function populateSelectDept(fac, deptSpanId, plainDeptListId) {
-    var depts = getDept();
+function populateSelectDept(fac, deptSpanId, plainDeptListId, allDepartments) {
+    var depts = allDepartments;
     depts = toDeptArray(depts, fac);
     var deptSelectList = generateSelectList(plainDeptListId, depts.Departments, depts.Years);
     $(deptSpanId).html(deptSelectList);

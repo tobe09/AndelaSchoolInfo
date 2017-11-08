@@ -26,9 +26,17 @@ $(function (){
     $(document.body).on('change', "#facListEdit", function (e) {
         e.preventDefault();
         var fac = $("#facListEdit").val();
-        populateSelectDept(fac, '#deptEdit', 'deptListEdit');
-        var years = $('#deptListEdit').val();
-        populateSelectLevel(years, '#levelEdit', 'levelListEdit');
+        
+        getDept(function (allDepartments) {
+            if (allDepartments != null) {
+                populateSelectDept(fac, '#deptEdit', 'deptListEdit', allDepartments);
+                var years = $('#deptListEdit').val();
+                populateSelectLevel(years, '#levelEdit', 'levelListEdit');
+            }
+            else {
+                message('#msgEdit', ajaxErrMsg, "red");                      //display error message pertaining to ajax call
+            }
+        });
     })
     
     //executes when the selected department option (for edit student page) is changed
@@ -84,13 +92,6 @@ function editStudentLinkClick() {
     makeVisible("#editStudent");
     makeInvisible("#editForm");
     makeInvisible("#editResult");
-    
-    //check if year of birth list has been generated before populating
-    if ($('#dobYearSpanEdit').text() == "") {
-        acceptedYears('dobYearEdit', '#dobYearSpanEdit');
-        getMonths('dobMonthEdit', '#dobMonthSpanEdit');
-        getDays('dobDayEdit', '#dobDaySpanEdit');
-    }
 }
 
 var studentResult;      //to be used for faculty, department and level callback function
@@ -111,16 +112,6 @@ function editStudentShowCallBack(result) {
         
         getFac('facDeptLevelEditCallBack');
         studentResult = result;             //'studentResult' variable is used for the callback method
-        
-        //get date of birth values
-        var dob = getDateArray(result.DateOfBirth);
-        $('#dobDayEdit').val(dob[0]);
-        $('#dobMonthEdit').val(dob[1]);
-        $('#dobYearEdit').val(dob[2]);
-        
-        $('#phoneNoEdit').val(result.PhoneNo);
-        $('#emailEdit').val(result.Email);
-        message('#msgEdit', "Make Required modifications", "brown");
     }
     //error condition
     else {
@@ -146,13 +137,39 @@ function facDeptLevelEditCallBack(allFaculties){
         }
         
         $('#facListEdit').val(studentResult.Faculty);                                   //set list to student's faculty
-        populateSelectDept(studentResult.Faculty, '#deptEdit', 'deptListEdit');         //generate departments list from faculty
-        $("#deptListEdit option").filter(function () {                          //set department select text option
-            return this.text == studentResult.Department;
-        }).prop('selected', true);
-        var years = $('#deptListEdit').val()                                    //get year value of selected department
-        populateSelectLevel(years, '#levelEdit', 'levelListEdit');              //generate levels select list from department years   
-        $('#levelListEdit').val(studentResult.Level);
+        
+        getDept(function (allDepartments) {
+            
+            if (allDepartments != null) {
+                populateSelectDept(studentResult.Faculty, '#deptEdit', 'deptListEdit', allDepartments);         //generate departments list from faculty
+                $("#deptListEdit option").filter(function () {                                                  //set department select text option
+                    return this.text == studentResult.Department;
+                }).prop('selected', true);
+                var years = $('#deptListEdit').val()//get year value of selected department
+                populateSelectLevel(years, '#levelEdit', 'levelListEdit');              //generate levels select list from department years   
+                $('#levelListEdit').val(studentResult.Level);
+
+                //check if year of birth list has been generated before populating
+                if ($('#dobYearSpanEdit').text() == "") {
+                    acceptedYears('dobYearEdit', '#dobYearSpanEdit');
+                    getMonths('dobMonthEdit', '#dobMonthSpanEdit');
+                    getDays('dobDayEdit', '#dobDaySpanEdit');
+                }
+                
+                //get date of birth values
+                var dob = getDateArray(studentResult.DateOfBirth);
+                $('#dobDayEdit').val(dob[0]);
+                $('#dobMonthEdit').val(dob[1]);
+                $('#dobYearEdit').val(dob[2]);
+                
+                $('#phoneNoEdit').val(studentResult.PhoneNo);
+                $('#emailEdit').val(studentResult.Email);
+                message('#msgEdit', "Make Required modifications", "brown");
+            }
+            else {
+                message('#msgEdit', ajaxErrMsg, "red");                      //display error message pertaining to ajax call
+            }
+        });
     }
 
     else {

@@ -104,20 +104,19 @@ function getFac(callBackMethodName) {
 };
 
 
-//function to get all departments (synchronously called)
-function getDept() {
-    var allDepartments
-    
+//function to get all departments (asynchronously called)
+function getDept(callBackFunction) {
+
     $.ajax({
         type: "GET",
         url: "dbTables/departments",
-        async: false,
         success: function (allDepts) {
-            allDepartments = allDepts;
+            callBackFunction(allDepts);
+        },
+        error: function () {
+            callBackFunction();
         }
     });
-    
-    return allDepartments;                                               //return all departments
 }
 
 

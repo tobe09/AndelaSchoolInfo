@@ -12,9 +12,17 @@ $(function () {
     $(document.body).on('change', "#facListAdd", function (e) {
         e.preventDefault();                                         //prevent default behaviour
         var fac = $("#facListAdd").val();                           //get selected faculty value
-        populateSelectDept(fac, '#deptAdd', 'deptListAdd');         //populate department select list
-        var years = $('#deptListAdd').val();                        //get number of years for course
-        populateSelectLevel(years, '#levelAdd', 'levelListAdd');    //populate level select list 
+
+        getDept(function (allDepartments) {
+            if (allDepartments != null) {
+                populateSelectDept(fac, '#deptAdd', 'deptListAdd', allDepartments);         //populate department select list
+                var years = $('#deptListAdd').val();                        //get number of years for course
+                populateSelectLevel(years, '#levelAdd', 'levelListAdd');    //populate level select list 
+            }
+            else {
+                message('#msgAdd', ajaxErrMsg, "red");                      //display error message pertaining to ajax call
+            }
+        });
     })
     
 
@@ -82,13 +90,6 @@ function addStudentLinkClick() {
     makeInvisible("#divResultAdd");
     
     getFac('facDeptLevelAddCallBack');
-    
-    //check if date of birth select list has been populated
-    if ($('#dobYearSpanAdd').text() == "") {
-        acceptedYears('dobYearAdd', '#dobYearSpanAdd');                             //get select list with all expected birth years of student
-        getMonths('dobMonthAdd', '#dobMonthSpanAdd');                               //get select list with all the months in a year
-        getDays('dobDayAdd', '#dobDaySpanAdd');                                     //get select list with all the days in a month
-    }
 }
 
 
@@ -100,9 +101,25 @@ function facDeptLevelAddCallBack(allFaculties){
         if ($('#facAdd').text() == "") {
             populateSelectFac('#facAdd', 'facListAdd', allFaculties);
             var fac = $('#facListAdd').val();
-            populateSelectDept(fac, '#deptAdd', 'deptListAdd');
-            var years = $('#deptListAdd').val();
-            populateSelectLevel(years, '#levelAdd', 'levelListAdd');
+
+            getDept(function (allDepartments) {
+
+                if (allDepartments != null) {
+                    populateSelectDept(fac, '#deptAdd', 'deptListAdd', allDepartments);
+                    var years = $('#deptListAdd').val();
+                    populateSelectLevel(years, '#levelAdd', 'levelListAdd');
+                    
+                    //check if date of birth select list has been populated
+                    if ($('#dobYearSpanAdd').text() == "") {
+                        acceptedYears('dobYearAdd', '#dobYearSpanAdd');                             //get select list with all expected birth years of student
+                        getMonths('dobMonthAdd', '#dobMonthSpanAdd');                               //get select list with all the months in a year
+                        getDays('dobDayAdd', '#dobDaySpanAdd');                                     //get select list with all the days in a month
+                    }
+                }
+                else {
+                    message('#msgAdd', ajaxErrMsg, "red");                      //display error message pertaining to ajax call
+                }
+            });
         }
     }
 
