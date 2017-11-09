@@ -28,12 +28,6 @@ function callBackDispatcher(callBackMethodName, result) {
         case 'deleteStudentResultCallBack': deleteStudentResultCallBack(result);
             break;
 
-        case 'facDeptLevelAddCallBack': facDeptLevelAddCallBack(result);
-            break;
-
-        case 'facDeptLevelEditCallBack': facDeptLevelEditCallBack(result);
-            break;
-
         default: pageLoad();
             break;
     }

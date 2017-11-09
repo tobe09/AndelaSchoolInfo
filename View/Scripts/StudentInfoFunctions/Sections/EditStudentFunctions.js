@@ -94,7 +94,6 @@ function editStudentLinkClick() {
     makeInvisible("#editResult");
 }
 
-var studentResult;      //to be used for faculty, department and level callback function
 //callback function to display student details to be modified
 function editStudentShowCallBack(result) {
     
@@ -110,70 +109,65 @@ function editStudentShowCallBack(result) {
         $('#fNameEdit').val(result.FirstName);
         $('#mNameEdit').val(result.MiddleName);
         
-        getFac('facDeptLevelEditCallBack');
-        studentResult = result;             //'studentResult' variable is used for the callback method
+        getFac(function (allFaculties) {
+            
+            if (allFaculties != null) {       //no error from asynchronous call
+                //repopulate faculty select list from server if it has not been generated
+                if ($('#facEdit').text() == "") {
+                    populateSelectFac('#facEdit', 'facListEdit', allFaculties);                 //generate faculties list from collection
+                }
+                
+                $('#facListEdit').val(result.Faculty);                                   //set list to student's faculty
+                
+                getDept(function (allDepartments) {
+                    
+                    if (allDepartments != null) {
+                        populateSelectDept(result.Faculty, '#deptEdit', 'deptListEdit', allDepartments);         //generate departments list from faculty
+                        $("#deptListEdit option").filter(function () {                                                  //set department select text option
+                            return this.text == result.Department;
+                        }).prop('selected', true);
+                        var years = $('#deptListEdit').val()//get year value of selected department
+                        populateSelectLevel(years, '#levelEdit', 'levelListEdit');              //generate levels select list from department years   
+                        $('#levelListEdit').val(result.Level);
+                        //check if year of birth list has been generated before populating
+                        if ($('#dobYearSpanEdit').text() == "") {
+                            acceptedYears('dobYearEdit', '#dobYearSpanEdit');
+                            getMonths('dobMonthEdit', '#dobMonthSpanEdit');
+                            getDays('dobDayEdit', '#dobDaySpanEdit');
+                        }
+                        
+                        //get date of birth values
+                        var dob = getDateArray(result.DateOfBirth);
+                        $('#dobDayEdit').val(dob[0]);
+                        $('#dobMonthEdit').val(dob[1]);
+                        $('#dobYearEdit').val(dob[2]);
+                        
+                        $('#phoneNoEdit').val(result.PhoneNo);
+                        $('#emailEdit').val(result.Email);
+                        message('#msgEdit', "Make Required modifications", "brown");
+                    }
+                    else {
+                        message('#msgEdit', ajaxErrMsg, "red");                      //display error message pertaining to ajax call
+                    }
+                });
+            }
+
+            else {
+                message('#msgEdit', ajaxErrMsg, "red");
+            }
+        });
     }
     //error condition
     else {
         makeInvisible("#editForm");
         makeInvisible('#editResult');
-
+        
         if (result == null) {
             message('#msgEdit', ajaxErrMsg, "red");
         }
         else {
             message('#msgEdit', result.Error, "red");
         }
-    }
-}
-
-//callback function to populate faculties, departments and levels
-function facDeptLevelEditCallBack(allFaculties){
-
-    if (allFaculties != null) {       //no error from asynchronous call
-        //repopulate faculty select list from server if it has not been generated
-        if ($('#facEdit').text() == "") {
-            populateSelectFac('#facEdit', 'facListEdit', allFaculties);                 //generate faculties list from collection
-        }
-        
-        $('#facListEdit').val(studentResult.Faculty);                                   //set list to student's faculty
-        
-        getDept(function (allDepartments) {
-            
-            if (allDepartments != null) {
-                populateSelectDept(studentResult.Faculty, '#deptEdit', 'deptListEdit', allDepartments);         //generate departments list from faculty
-                $("#deptListEdit option").filter(function () {                                                  //set department select text option
-                    return this.text == studentResult.Department;
-                }).prop('selected', true);
-                var years = $('#deptListEdit').val()//get year value of selected department
-                populateSelectLevel(years, '#levelEdit', 'levelListEdit');              //generate levels select list from department years   
-                $('#levelListEdit').val(studentResult.Level);
-
-                //check if year of birth list has been generated before populating
-                if ($('#dobYearSpanEdit').text() == "") {
-                    acceptedYears('dobYearEdit', '#dobYearSpanEdit');
-                    getMonths('dobMonthEdit', '#dobMonthSpanEdit');
-                    getDays('dobDayEdit', '#dobDaySpanEdit');
-                }
-                
-                //get date of birth values
-                var dob = getDateArray(studentResult.DateOfBirth);
-                $('#dobDayEdit').val(dob[0]);
-                $('#dobMonthEdit').val(dob[1]);
-                $('#dobYearEdit').val(dob[2]);
-                
-                $('#phoneNoEdit').val(studentResult.PhoneNo);
-                $('#emailEdit').val(studentResult.Email);
-                message('#msgEdit', "Make Required modifications", "brown");
-            }
-            else {
-                message('#msgEdit', ajaxErrMsg, "red");                      //display error message pertaining to ajax call
-            }
-        });
-    }
-
-    else {
-        message('#msgEdit', ajaxErrMsg, "red");
     }
 }
 

@@ -88,17 +88,17 @@ function deleteStudent(query, callBackMethodName) {
 //Functions that query existing objects in the web server (since the database is not queried, asynchrony is not a necessity)
 
 //function to get all faculties  (asynchronously called)
-function getFac(callBackMethodName) {
+function getFac(callBackFunction) {
     var allFaculties;
     
     $.ajax({
         type: "GET",
         url: "dbTables/faculties",
         success: function (allFacs) {
-            callBackDispatcher(callBackMethodName, allFacs);
+            callBackFunction(allFacs);
         },
         error: function (){
-            callBackDispatcher(callBackMethodName);
+            callBackFunction();
         }
     });                                          
 };
