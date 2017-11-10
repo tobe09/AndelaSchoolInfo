@@ -22,7 +22,7 @@ var isValidStudent = function isValidStudent(student) {
     var phoneNoValid = checkPhoneNo(student.PhoneNo);
     var dobValid = checkDob(student.Day, student.Month, student.Year);
     
-    if (firstNameValid.isValid && lastNameValid.isValid && facultyValid.isValid && deptValid &&
+    if (firstNameValid.isValid && lastNameValid.isValid && facultyValid.isValid && deptValid.isValid &&
          levelValid.isValid && emailValid.isValid && phoneNoValid.isValid && dobValid.isValid) {
         status.isValid = true;
         status.message = "Valid Student";
@@ -41,8 +41,7 @@ var isValidStudent = function isValidStudent(student) {
             status.message = facultyValid.message;
         }
         else if (!deptValid.isValid) {
-            s
-            tatus.message = deptValid.message;
+            status.message = deptValid.message;
         }
         else if (!levelValid.isValid) {
             status.message = levelValid.message;
@@ -107,7 +106,7 @@ var checkFaculty = function checkFaculty(faculty) {
             
             if (Faculties[i].Faculty == faculty) {
                 status.isValid = true;
-                status.messsage = 'Valid faculty';
+                status.message = 'Valid faculty';
                 break;
             }
         }
@@ -225,7 +224,7 @@ var checkPhoneNo = function checkPhoneNo(phoneNo) {
 
 
 //accepted age range for students
-var ageRange = { minAge: 10, maxAge: 70 };
+var ageRange = { minAge: 16, maxAge: 70 };
 
 
 //check date of birth for validity using a gregorian calender (helper function)
