@@ -106,7 +106,7 @@ function addStudentLinkClick() {
                         
                         //check if date of birth select list has been populated
                         if ($('#dobYearSpanAdd').text() == "") {
-                            acceptedYears('dobYearAdd', '#dobYearSpanAdd');                             //get select list with all expected birth years of student
+                            getAcceptedYears('dobYearAdd', '#dobYearSpanAdd');                          //get select list with all expected birth years of student
                             getMonths('dobMonthAdd', '#dobMonthSpanAdd');                               //get select list with all the months in a year
                             getDays('dobDayAdd', '#dobDaySpanAdd');                                     //get select list with all the days in a month
                         }

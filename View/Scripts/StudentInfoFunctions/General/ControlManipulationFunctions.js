@@ -1,5 +1,5 @@
 ﻿//to populate select list with expected birth years of students
-function acceptedYears(plainYearListId, spanId) {
+function getAcceptedYears(plainYearListId, spanId) {
     var years = [];
     
     var ageRange = getAgeRange();                                               //get the acceptable age range from the server

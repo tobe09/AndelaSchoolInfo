@@ -1,8 +1,8 @@
 ﻿//import mongoose and connect
 var mongoose = require('mongoose');
 
-//var localAddress = 'mongodb://localhost:27017/schoolInfoDb';                                    //local development address
-var hostAddress = 'mongodb://tobe09:nkeody09@ds121955.mlab.com:21955/schoolinfodb';               //mLab repository address
+//var localAddress = 'mongodb://localhost:27017/schoolInfoDb';                                  //local development address
+var hostAddress = 'mongodb://tobe09:nkeody09@ds121955.mlab.com:21955/schoolinfodb';             //mLab repository address
 mongoose.connect(hostAddress, { useMongoClient: true });
 
 //check connection status

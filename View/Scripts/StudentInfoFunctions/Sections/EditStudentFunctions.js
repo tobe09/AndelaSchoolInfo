@@ -131,7 +131,7 @@ function editStudentShowCallBack(result) {
                         $('#levelListEdit').val(result.Level);
                         //check if year of birth list has been generated before populating
                         if ($('#dobYearSpanEdit').text() == "") {
-                            acceptedYears('dobYearEdit', '#dobYearSpanEdit');
+                            getAcceptedYears('dobYearEdit', '#dobYearSpanEdit');
                             getMonths('dobMonthEdit', '#dobMonthSpanEdit');
                             getDays('dobDayEdit', '#dobDaySpanEdit');
                         }

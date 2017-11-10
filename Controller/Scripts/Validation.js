@@ -13,7 +13,6 @@ var isValidStudent = function isValidStudent(student) {
     var firstNameValid = checkName(student.FirstName, 'first name');
     var facultyValid = checkFaculty(student.Faculty);
     var deptValid = false;
-
     //if faculty is valid, check department's validity
     if (facultyValid) {                                                          
         deptValid = checkDepts(student.Department, student.Faculty);
@@ -71,13 +70,15 @@ var checkName = function checkName(name, nameType) {
     var status = new Object();                                                          //object representing success or failure status
     status.isValid = false;
     
-    if (nameType == null) nameType = 'name';
+    if (nameType == null || typeof (nameType) != 'string') nameType = 'name';
+    
+    name = name.trim();
 
-    //name must contain at least 2 characters  
     if (name.length <= 0) {
         status.message = 'Please enter your ' + nameType;
     }
-    else if (name.length <=2) {
+    //name must contain at least 2 characters  
+    else if (name.length <= 2) {
         status.message = pascalCase(nameType) + ' should consist of three or more characters';
     }
     //valid name
@@ -96,12 +97,19 @@ var checkFaculty = function checkFaculty(faculty) {
     status.isValid = false;
     status.message = 'Invalid faculty. Faculty type is not registered';
     
-    for (var i = 0; i < Faculties.length; i++) {
+    faculty = faculty.trim();
 
-        if (Faculties[i].Faculty == faculty) {
-            status.isValid = true;
-            status.messsage = 'Valid faculty';
-            break;
+    if (faculty.length == 0) {
+        status.message = "Please enter your faculty";
+    }
+    else {
+        for (var i = 0; i < Faculties.length; i++) {
+            
+            if (Faculties[i].Faculty == faculty) {
+                status.isValid = true;
+                status.messsage = 'Valid faculty';
+                break;
+            }
         }
     }
     
@@ -115,21 +123,27 @@ var checkDepts = function checkDepts(dept, fac) {
     status.isValid = false;
     status.message = 'Invalid department. Department type does not exist for selected faculty';
     
-    for (var i = 0; i < Departments.length; i++) {
-        
-        if (Departments[i].Faculty == fac) {
+    dept = dept.trim();
+
+    if (dept.length == 0) {
+        status.message = "Please enter your department";
+    }
+    else {
+        for (var i = 0; i < Departments.length; i++) {
             
-            //check department under selected faculty
-            for (var j = 0; j < Departments[i].Depts.length; j++) {
-
-                if (Departments[i].Depts[j].Department == dept) {
-                    status.isValid = true;
-                    status.message = 'Valid department';
-                    break;
+            if (Departments[i].Faculty == fac) {
+                
+                //check department under selected faculty
+                for (var j = 0; j < Departments[i].Depts.length; j++) {
+                    
+                    if (Departments[i].Depts[j].Department == dept) {
+                        status.isValid = true;
+                        status.message = 'Valid department';
+                        break;
+                    }
                 }
+                break;
             }
-
-            break;
         }
     }
     
@@ -143,7 +157,13 @@ var checkLevel = function checkLevel(level) {
     status.isValid = false;
     status.message = 'Invalid level. Selected level is not registered';
     
-    if (typeof (Levels.Error) == 'undefined') {
+    level = level.trim();
+
+    if (level.length == 0) {
+        status.message = "Please enter a level";
+    }
+    
+    else {
         
         for (var i = 0; i < Levels.length; i++) {
             if (Levels[i].Level == level) {
@@ -161,14 +181,16 @@ var checkLevel = function checkLevel(level) {
 //to validate email address (helper function)
 var checkEmail = function checkEmail(email) {
     var status = new Object();
-    var emailRegEx = new RegExp("^[(\\w)+@(\\w)+\\.(\\w)+$]{5,32}");                 //regular expression matching a standard email address
+    var emailRegEx = new RegExp("^(\\w)+@(\\w)+\\.(\\w)+$");                 //regular expression matching a standard email address
+    
+    email = email.trim();
 
     status.isValid = new RegExp(emailRegEx).test(email);
     
     if (email.length == 0) {
         status.message = 'Please enter your email address';
     }
-    if (!status.isValid) {
+    else if (!status.isValid) {
         status.message = 'Invalid email address format';
     }
     else {
@@ -183,6 +205,8 @@ var checkEmail = function checkEmail(email) {
 var checkPhoneNo = function checkPhoneNo(phoneNo) {
     var status = new Object();
     var phoneNoRegEx = new RegExp("^\\+?[\\d]{7,16}$");                              //regular expression matching a standard phone number with an optional '+'
+    
+    phoneNo = phoneNo.trim();
 
     status.isValid = phoneNoRegEx.test(phoneNo);
     
@@ -200,7 +224,8 @@ var checkPhoneNo = function checkPhoneNo(phoneNo) {
 }
 
 
-var ageRange = { minAge: 16, maxAge: 70 };
+//accepted age range for students
+var ageRange = { minAge: 10, maxAge: 70 };
 
 
 //check date of birth for validity using a gregorian calender (helper function)
